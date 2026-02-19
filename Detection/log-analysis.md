@@ -27,7 +27,9 @@ Primary log source used for detection:
 - Windows Security Event Logs
 - Tool Used: Event Viewer
 - Log Path:
+```
 Event Viewer → Windows Logs → Security
+```
 
 These logs contain authentication activity, including both successful and failed login attempts.
 
