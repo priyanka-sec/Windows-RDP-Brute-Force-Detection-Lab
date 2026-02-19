@@ -25,7 +25,6 @@ The purpose of this timeline is to demonstrate how a Security Operations Center 
 <br><br>
 
 ## ⏱️ Attack Timeline
-<br>
 
 ### 🟡 Phase 1 — Environment Preparation
 
