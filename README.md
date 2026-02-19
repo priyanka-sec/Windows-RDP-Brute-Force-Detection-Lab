@@ -2,7 +2,7 @@
 > 🔐 A Hands-On Blue Team Lab for RDP Attack Detection & Mitigation
 
 
-<br><br>
+<br>
 
 ## 🧠 Skills Demonstrated
 
@@ -13,7 +13,7 @@
 - Incident Response Basics
 - PowerShell Security Commands
 
-<br><br>
+<br>
 
 
 ## 📘 Introduction
