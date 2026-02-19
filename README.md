@@ -2,7 +2,7 @@
 > 🔐 A Hands-On Blue Team Lab for RDP Attack Detection & Mitigation
 
 
-<br> 
+<br><br>
 
 ## 🧠 Skills Demonstrated
 
@@ -119,14 +119,12 @@ Enable-NetFirewallRule -DisplayGroup "Remote Desktop"
 ### 3. Kali Linux Configuration (Attacker)
 
 #### 1. Ensure both VMs are connected to the same virtual network (Host-only or Internal Network in VirtualBox).
-<br>
 
 #### 2. Install RDP client tools if not already installed:
 ```bash
 sudo apt update
 sudo apt install freerdp2-x11
 ```
-<br>
 
 #### 3. Test RDP connection using:
 ```bash
@@ -140,7 +138,7 @@ xfreerdp /v:<Windows-VM-IP> /u:Administrator /p:<Password>
 #### 2. Navigate to:  
    **Windows Logs → Security**
 
-#### 5. Look for the following events:
+#### 3. Look for the following events:
 - **Event ID 4624 → Successful Login**
   - Logon Type 10 = Remote Interactive (RDP)
 
