@@ -146,6 +146,7 @@ xfreerdp /v:<Windows-VM-IP> /u:Administrator /p:<Password>
   - Logon Type 10 = Failed RDP attempt
 
 
+<br> 
 
 ## 🧰 Tools Used
 
@@ -158,7 +159,7 @@ xfreerdp /v:<Windows-VM-IP> /u:Administrator /p:<Password>
 
 
 
-
+<br>
 
 ## ⚠️ Disclaimer
 
@@ -169,6 +170,7 @@ Do NOT perform these techniques on real systems without proper authorization.
 
 
 
+<br> 
 
 ## 🚀 Future Improvements
 
