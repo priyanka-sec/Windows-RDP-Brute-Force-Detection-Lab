@@ -1,4 +1,4 @@
-🔍 Detection & Log Analysis (SOC Perspective)
+# 🔍 Detection & Log Analysis (SOC Perspective)
 
 This section explains how the simulated RDP attack was detected using Windows Security Logs and basic SOC investigation techniques.
 
@@ -6,7 +6,7 @@ The focus is on identifying malicious patterns through log monitoring and event 
 
 <br><br>
 
-🎯 Detection Objective
+## 🎯 Detection Objective
 
 - Identify unauthorized login attempts
 - Detect brute-force indicators
@@ -20,7 +20,7 @@ The focus is on identifying malicious patterns through log monitoring and event 
 
 
 
-🖥️ Log Source
+## 🖥️ Log Source
 
 Primary log source used for detection:
 
@@ -36,8 +36,8 @@ These logs contain authentication activity, including both successful and failed
 
 
 
-🚨 Key Security Events Analyzed
-❌ Event ID 4625 — Failed Logon Attempts
+## 🚨 Key Security Events Analyzed
+## ❌ Event ID 4625 — Failed Logon Attempts
 
 This event indicates unsuccessful authentication attempts.
 
@@ -57,7 +57,7 @@ Repeated 4625 events from a single source are strong indicators of brute-force o
 
 
 
-✅ Event ID 4624 — Successful Logon
+## ✅ Event ID 4624 — Successful Logon
 
 This event indicates a successful login.
 
@@ -75,18 +75,18 @@ A successful login immediately after failed attempts is a high-confidence compro
 
 
 
-🔎 Log Analysis Methodology
+## 🔎 Log Analysis Methodology
 
 The detection process followed a basic SOC investigation workflow:
 
-1️. Filtering Security Logs
+### 1️. Filtering Security Logs
 
 - Opened Security logs in Event Viewer
 - Filtered using Event IDs:
    - 4625 (Failed Logon)
    - 4624 (Successful Logon)
 
-2️. Pattern Identification
+### 2️. Pattern Identification
 
 - Identified clusters of failed logins
 - Observed repeated timestamps within short intervals
@@ -94,7 +94,7 @@ The detection process followed a basic SOC investigation workflow:
 
 This indicated automated attack behavior.
 
-3️. Event Correlation
+### 3️. Event Correlation
 
 Correlated:
 
@@ -104,7 +104,7 @@ Correlated:
 
 This confirmed a simulated brute-force compromise.
 
-4️. Log Attribute Examination
+### 4️. Log Attribute Examination
 
 - Key fields analyzed:
 - Account Name
@@ -120,7 +120,7 @@ These fields help reconstruct attacker activity.
 
 
 
-🧠 Detection Challenges
+## 🧠 Detection Challenges
 
 During analysis, some real-world nuances were observed:
 
@@ -137,7 +137,7 @@ SOC analysts must interpret logs based on context, not assumptions.
 
 
 
-📊 Indicators of Compromise (IOCs)
+## 📊 Indicators of Compromise (IOCs)
 
 The following indicators confirmed malicious activity:
 
@@ -153,7 +153,7 @@ The following indicators confirmed malicious activity:
 
 
 
-🛡️ SOC Detection Takeaways
+## 🛡️ SOC Detection Takeaways
 
 - Authentication logs are critical for intrusion detection
 - Event correlation is key in identifying attacks
@@ -166,7 +166,7 @@ The following indicators confirmed malicious activity:
 
 
 
-🧪 Real-World Relevance
+## 🧪 Real-World Relevance
 
 In enterprise environments, similar detection is performed using:
 
@@ -182,7 +182,7 @@ This lab simulates that process manually using native Windows logs.
 
 
 
-🏁 Detection Summary
+## 🏁 Detection Summary
 
 The RDP attack was successfully detected by analyzing Windows Security Logs and correlating authentication events.
 
