@@ -66,6 +66,8 @@ In real environments, this stage often includes scanning activity.
 - Same source IP appearing in logs
 - High frequency of failed attempts
 
+<br>
+
 📌 Technical Insight:  
 Although the attack targeted RDP, failed attempts were logged as **Logon Type 3**, which represents network-based authentication attempts before a full RDP session is established.
 
