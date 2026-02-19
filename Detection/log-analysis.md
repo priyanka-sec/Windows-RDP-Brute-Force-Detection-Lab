@@ -6,6 +6,7 @@ The focus is on identifying malicious patterns through log monitoring and event 
 
 <br><br>
 
+
 ## 🎯 Detection Objective
 
 - Identify unauthorized login attempts
