@@ -5,6 +5,8 @@
 ## What it shows:
 End-to-end attacker journey.
 
+<br><br>
+
 ## Structure:
 
 ```mermaid
