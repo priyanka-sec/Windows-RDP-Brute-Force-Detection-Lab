@@ -8,7 +8,6 @@ End-to-end attacker journey.
 ## Structure:
 
 ```mermaid
-flowchart LR
 A[Attacker (Kali Linux)] --> B[Recon (IP Discovery + Port 3389)]
 B --> C[Brute Force Attempts<br>(Event ID 4625)]
 C --> D[Successful Login<br>(Event ID 4624)]
