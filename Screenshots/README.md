@@ -18,9 +18,9 @@ Each phase has its own documentation file describing the captured evidence.
 
 | Phase | Description | Documentation |
 |------|------------|--------------|
-| 🧨 Attack Phase | Screenshots of attacker activity from Kali Linux | [attack-phase](attack-phase.md) |
-| 🔍 Detection Phase | Event Viewer logs and authentication analysis | [detection-phase](detection-phase.md) |
-| 🛡️ Mitigation Phase | Defensive actions and system hardening | [mitigation-phase](mitigation-phase.md) |
+| **🧨 Attack Phase** | Screenshots of attacker activity from Kali Linux | [attack-phase](attack-phase.md) |
+| **🔍 Detection Phase** | Event Viewer logs and authentication analysis | [detection-phase](detection-phase.md) |
+| **🛡️ Mitigation Phase** | Defensive actions and system hardening | [mitigation-phase](mitigation-phase.md) |
 
 <br><br>
 
