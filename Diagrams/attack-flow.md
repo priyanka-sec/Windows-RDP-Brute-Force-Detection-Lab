@@ -10,7 +10,7 @@ End-to-end attacker journey.
 ```mermaid
 graph TD
     A[Attacker - Kali Linux]
-    B[Recon - IP Discovery + Port 3389]
+    B[Recon <br> IP Discovery + Port 3389]
     C[Brute Force Attempts<br>Event ID 4625]
     D[Successful Login<br>Event ID 4624]
     E[Unauthorized RDP Access]
