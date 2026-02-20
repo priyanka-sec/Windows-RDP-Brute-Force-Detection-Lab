@@ -18,9 +18,9 @@ Each phase has its own documentation file describing the captured evidence.
 
 | Phase | Description | Documentation |
 |------|------------|--------------|
-| 🧨 Attack Phase | Screenshots of attacker activity from Kali Linux | [Attack Phase Documentation](attack-phase.md) |
-| 🔍 Detection Phase | Event Viewer logs and authentication analysis | [Attack Phase Documentation](detection-phase.md) |
-| 🛡️ Mitigation Phase | Defensive actions and system hardening | [Attack Phase Documentation](mitigation-phase.md) |
+| 🧨 Attack Phase | Screenshots of attacker activity from Kali Linux | [attack-phase](attack-phase.md) |
+| 🔍 Detection Phase | Event Viewer logs and authentication analysis | [detection-phase](detection-phase.md) |
+| 🛡️ Mitigation Phase | Defensive actions and system hardening | [mitigation-phase](mitigation-phase.md) |
 
 <br><br>
 
@@ -37,7 +37,7 @@ Includes:
 - Brute-force login trials
 - Attacker source visibility
 
-📄 See: [Attack Phase Documentation](attack-phase.md)
+📄 See: [attack-phase](attack-phase.md)
 
 <br><br>
 
@@ -54,7 +54,7 @@ Includes:
 - Event ID 4624 (Successful Logons)
 - Logon type and timestamp correlation
 
-📄 See: [Attack Phase Documentation](detection-phase.md)
+📄 See: [detection-phase](detection-phase.md)
 
 <br><br>
 
@@ -72,7 +72,7 @@ Includes:
 - Registry configuration changes
 - Post-hardening system state
 
-📄 See: [Attack Phase Documentation](mitigation-phase.md)
+📄 See: [mitigation-phase](mitigation-phase.md)
 
 <br><br>
 
