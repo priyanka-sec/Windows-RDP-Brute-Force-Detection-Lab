@@ -12,7 +12,6 @@
 - Incident Response Basics
 - PowerShell Security Commands
 
-<br><br>
 
 
 ## 📘 Introduction
@@ -98,7 +97,7 @@ Set-ItemProperty -Path 'HKLM:\System\CurrentControlSet\Control\Terminal Server' 
   - 0 = Allow RDP (Enable)
   - 1 = Deny RDP (Disable)
 
-
+<br>
 
 #### 2.2 Enable Firewall Rule for RDP (If Blocked)
 
@@ -110,7 +109,6 @@ Enable-NetFirewallRule -DisplayGroup "Remote Desktop"
 
 
 <br><br>
-
 
 
 ### 3. Kali Linux Configuration (Attacker)
@@ -144,9 +142,7 @@ xfreerdp /v:<Windows-VM-IP> /u:Administrator /p:<Password>
 - **Event ID 4625 → Failed Login**
   - Logon Type 10 = Failed RDP attempt
 
-
-<br>
-
+<br><br>
 
 ## 🧰 Tools Used
 
@@ -157,9 +153,7 @@ xfreerdp /v:<Windows-VM-IP> /u:Administrator /p:<Password>
 - PowerShell
 - FreeRDP (RDP Client)
 
-
-
-<br>
+<br><br>
 
 ## ⚠️ Disclaimer
 
@@ -168,8 +162,7 @@ All activities were performed in an **isolated virtual environment**.
 
 Do NOT perform these techniques on real systems without proper authorization.
 
-
-<br> 
+<br><br>
 
 ## 🚀 Future Improvements
 
@@ -177,8 +170,6 @@ Do NOT perform these techniques on real systems without proper authorization.
 - Automated log parsing scripts
 - Detection rules for brute-force attacks
 - Blue team playbook creation
-
-
 
 <br><br>
 
