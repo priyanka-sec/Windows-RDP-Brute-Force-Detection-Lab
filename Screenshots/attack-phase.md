@@ -9,8 +9,6 @@ Includes:
 
 <br><br>
 
-<br><br>
-
 ## Kali RDP Command
 ![Kali RDP Command](images/kali-rdp-connection.png)
 <br>
