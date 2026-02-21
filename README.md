@@ -1,88 +1,74 @@
-<h1>Windows RDP Attack Detection Lab</h1>
-> 🔐 A Hands-On Blue Team Lab for RDP Attack Detection & Mitigation
+# Windows RDP Attack Detection Lab  
+🔐 A Hands-On Blue Team Lab for RDP Attack Detection & Mitigation  
 
-<br><br>
+---
 
 ## 🧠 Skills Demonstrated
+- Windows Security Log Analysis  
+- RDP Attack Simulation  
+- Event Viewer Monitoring  
+- Timeline Analysis  
+- Incident Response Basics  
+- PowerShell Security Commands  
 
-- Windows Security Log Analysis
-- RDP Attack Simulation
-- Event Viewer Monitoring
-- Timeline Analysis
-- Incident Response Basics
-- PowerShell Security Commands
-
-<br><br>
+---
 
 ## 📘 Introduction
-
-This project demonstrates a hands-on Windows Remote Desktop Protocol (RDP) attack lab. 
+This project demonstrates a hands-on Windows Remote Desktop Protocol (RDP) attack lab.  
 It provides a safe virtual environment to understand how attackers attempt to gain access to Windows systems, and how defenders detect, mitigate, and monitor these attacks.  
 
-This lab is designed for **cybersecurity students, SOC analysts, incident responders, and ethical hackers** to gain hands-on experience in monitoring, mitigation, and forensic analysis.
-<br><br>
+This lab is designed for **cybersecurity students, SOC analysts, incident responders, and ethical hackers** to gain hands-on experience in monitoring, mitigation, and forensic analysis.  
 
-
+---
 
 ## 🔍 Overview
-
-The lab simulates controlled brute-force and credential-based attack scenarios to analyze authentication logs and defensive responses.
+The lab simulates controlled brute-force and credential-based attack scenarios to analyze authentication logs and defensive responses.  
 
 The lab uses **Kali Linux as the attacker machine** and **Windows Server 2022 as the victim machine**.  
-It focuses on **RDP attack attempts**, examining **Event Viewer logs**, applying **mitigation techniques**, and learning **SOC monitoring procedures**.
+It focuses on **RDP attack attempts**, examining **Event Viewer logs**, applying **mitigation techniques**, and learning **SOC monitoring procedures**.  
 
-Key aspects of the lab include:
-
+**Key aspects of the lab include:**
 - Understanding Event IDs **4624 (successful login)** and **4625 (failed login)**  
 - Performing controlled RDP attacks in a virtual environment  
 - Practicing **timeline analysis** and **mitigation steps**  
-- Learning **SOC and incident response workflows**
-<br><br>
+- Learning **SOC and incident response workflows**  
 
-
+---
 
 ## 🎯 Objectives
-
 - Learn how Windows Server 2022 logs successful and failed login attempts  
 - Understand Event IDs 4624 and 4625 and their meaning  
-- Learn to **detect suspicious login attempts**  
+- Detect suspicious login attempts  
 - Apply **mitigation techniques** for RDP vulnerabilities  
 - Gain **hands-on experience** with Event Viewer, SOC monitoring, and incident response  
 - Understand how attackers hide their activity and how to track them  
-<br><br>
 
-
+---
 
 ## ⚔️ Attack Scenario
+In this lab, the attacker attempts multiple RDP login attempts against the Windows Server 2022 machine using valid and invalid credentials.  
 
-In this lab, the attacker attempts multiple RDP login attempts against the Windows Server 2022 machine using valid and invalid credentials.
+**Objectives:**
+- Generate failed login events (Event ID 4625)  
+- Observe successful authentication (Event ID 4624)  
+- Analyze logon type 10 (Remote Interactive)  
+- Identify suspicious login patterns  
 
-The objective of this lab is to:
-- Generate failed login events (Event ID 4625)
-- Observe successful authentication (Event ID 4624)
-- Analyze logon type 10 (Remote Interactive)
-- Identify suspicious login patterns
-<br><br>
-
-
+---
 
 ## 🛠️ Lab Setup / How to Run
 
-Follow these steps to set up and run the lab safely:
-
 ### 1. Virtual Environment
-
 - Install **VirtualBox** or **VMware** on your host machine  
-- Create the following virtual machines:
-  - **Kali Linux VM (Attacker)**
-  - **Windows Server 2022 VM (Victim)**
-
-<br><br>
+- Create the following virtual machines:  
+  - **Kali Linux VM (Attacker)**  
+  - **Windows Server 2022 VM (Victim)**  
 
 ### 2. Windows Server 2022 Configuration
 
-#### 1.1 Enable **Remote Desktop Protocol (RDP)**:
-- Open PowerShell as Administrator
+#### 2.1 Enable Remote Desktop Protocol (RDP)
+```powershell
+Set-ItemProperty -Path 'HKLM:\System\CurrentControlSet\Control\Terminal Server' -Name "fDenyTSConnections" -Value 0
 ```powershell
 Set-ItemProperty -Path 'HKLM:\System\CurrentControlSet\Control\Terminal Server' -Name "fDenyTSConnections" -Value 0
 ```
