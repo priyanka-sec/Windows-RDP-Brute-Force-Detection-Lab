@@ -100,21 +100,18 @@ Enable-NetFirewallRule -DisplayGroup "Remote Desktop"
 ### 3. Kali Linux Configuration (Attacker)
 
 #### 1. Ensure both VMs are connected to the same virtual network (Host-only or Internal Network in VirtualBox).
-<br>
 
 #### 2. Install RDP client tools if not already installed:
 ```bash
 sudo apt update
 sudo apt install freerdp2-x11
 ```
-<br>
 
 #### 3. Test RDP connection using:
 ```bash
 xfreerdp /v:<Windows-VM-IP> /u:Administrator /p:<Password>
 ```
 - Replace <Windows-VM-IP> with the victim VM’s IP and <Password> with the Administrator password.
-<br>
 
 ### 4. Verification and Monitoring
 #### 1. Open **Event Viewer** on the Windows Server 2022 VM.  
