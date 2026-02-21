@@ -67,8 +67,6 @@ The objective of this lab is to:
 
 
 
- 
-
 ## 🛠️ Lab Setup / How to Run
 
 Follow these steps to set up and run the lab safely:
