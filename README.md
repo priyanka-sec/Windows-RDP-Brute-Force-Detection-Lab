@@ -113,7 +113,7 @@ xfreerdp /v:<Windows-VM-IP> /u:Administrator /p:<Password>
 ```
 - Replace <Windows-VM-IP> with the victim VM’s IP and <Password> with the Administrator password.
 
-<br> 
+<br><br>
 
 ### 4. Verification and Monitoring
 #### 1. Open **Event Viewer** on the Windows Server 2022 VM.  
