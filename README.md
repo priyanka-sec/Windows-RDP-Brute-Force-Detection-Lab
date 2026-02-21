@@ -1,7 +1,6 @@
 <h1>Windows RDP Attack Detection Lab</h1>
 > 🔐 A Hands-On Blue Team Lab for RDP Attack Detection & Mitigation
 
-
 <br> 
 
 ## 🧠 Skills Demonstrated
