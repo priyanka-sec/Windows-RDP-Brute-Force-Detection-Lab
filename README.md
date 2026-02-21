@@ -1,7 +1,7 @@
 # Windows RDP Attack Detection Lab  
 🔐 A Hands-On Blue Team Lab for RDP Attack Detection & Mitigation  
 
-<br>
+<br><br>
 
 ## 🧠 Skills Demonstrated
 - Windows Security Log Analysis  
@@ -11,7 +11,7 @@
 - Incident Response Basics  
 - PowerShell Security Commands  
 
-<br>
+<br><br>
 
 ## 📘 Introduction
 This project demonstrates a hands-on Windows Remote Desktop Protocol (RDP) attack lab.  
@@ -19,7 +19,7 @@ It provides a safe virtual environment to understand how attackers attempt to ga
 
 This lab is designed for **cybersecurity students, SOC analysts, incident responders, and ethical hackers** to gain hands-on experience in monitoring, mitigation, and forensic analysis.  
 
-<br>
+<br><br>
 
 ## 🔍 Overview
 The lab simulates controlled brute-force and credential-based attack scenarios to analyze authentication logs and defensive responses.  
@@ -33,7 +33,7 @@ It focuses on **RDP attack attempts**, examining **Event Viewer logs**, applying
 - Practicing **timeline analysis** and **mitigation steps**  
 - Learning **SOC and incident response workflows**  
 
-<br>
+<br><br>
 
 ## 🎯 Objectives
 - Learn how Windows Server 2022 logs successful and failed login attempts  
@@ -43,7 +43,7 @@ It focuses on **RDP attack attempts**, examining **Event Viewer logs**, applying
 - Gain **hands-on experience** with Event Viewer, SOC monitoring, and incident response  
 - Understand how attackers hide their activity and how to track them  
 
-<br>
+<br><br>
 
 ## ⚔️ Attack Scenario
 In this lab, the attacker attempts multiple RDP login attempts against the Windows Server 2022 machine using valid and invalid credentials.  
@@ -54,7 +54,7 @@ In this lab, the attacker attempts multiple RDP login attempts against the Windo
 - Analyze logon type 10 (Remote Interactive)  
 - Identify suspicious login patterns  
 
-<br>
+<br><br>
 
 ## 🛠️ Lab Setup / How to Run
 
