@@ -1,19 +1,21 @@
-<h1 align="center">🛡️ Windows RDP Brute Force Detection & Log Analysis Lab </h1>
+<h1 align="center">🛡️ Windows RDP Brute Force Detection & Log Analysis Lab</h1>
 
 <h3 align="center">
-RDP Brute Force Attack Simulation, Windows Event Log Analysis & MITRE ATT&CK Mapping
+RDP Authentication Monitoring, Windows Event Log Investigation & SOC Detection Workflow
 </h3>
 
 <p align="center">
   <img src="https://img.shields.io/badge/Platform-VirtualBox-blue?style=flat-square"/>
   <img src="https://img.shields.io/badge/Attacker-Kali%20Linux-red?style=flat-square"/>
   <img src="https://img.shields.io/badge/Victim-Windows%20Server%202022-blue?style=flat-square"/>
+  <img src="https://img.shields.io/badge/Monitoring-Windows%20Event%20Viewer-yellow?style=flat-square"/>
+  <img src="https://img.shields.io/badge/Analysis-PowerShell-blueviolet?style=flat-square"/>
   <img src="https://img.shields.io/badge/Status-Completed-green?style=flat-square"/>
 </p>
 
-<br><br>
+<br>
 
-## 📑 Table of Contents
+# 📑 Table of Contents
 
 - [Project Overview](#-project-overview)
 - [Objectives](#-objectives)
@@ -22,153 +24,167 @@ RDP Brute Force Attack Simulation, Windows Event Log Analysis & MITRE ATT&CK Map
 - [Tools & Technologies Used](#️-tools--technologies-used)
 - [Attack Simulation Workflow](#️-attack-simulation-workflow)
 - [Windows Event Log Analysis](#-windows-event-log-analysis)
+- [Detection & Investigation Findings](#-detection--investigation-findings)
+- [Indicators of Compromise (IOCs)](#-indicators-of-compromise-iocs)
 - [MITRE ATT&CK Mapping](#-mitre-attck-mapping)
+- [PowerShell Log Hunting](#-powershell-log-hunting)
 - [Incident Timeline](#-incident-timeline)
 - [Mitigation Recommendations](#️-mitigation-recommendations)
 - [Lessons Learned](#-lessons-learned)
+- [Screenshots](#️-screenshots)
 - [About the Analyst](#-about-the-analyst)
 
-<br><br>
+<br>
 
-## 📌 Project Overview
+# 📌 Project Overview
 
-This project simulates a controlled Remote Desktop Protocol (RDP) brute-force attack against a Windows Server 2022 environment to demonstrate how Security Operations Center (SOC) analysts identify, investigate, and respond to suspicious authentication activity.
+This project simulates suspicious Remote Desktop Protocol (RDP) authentication activity against a Windows Server 2022 system to demonstrate how SOC analysts investigate Windows authentication logs and identify potential brute-force behavior.
 
-The lab focuses on analyzing Windows Security Event Logs generated during repeated RDP login attempts and understanding how attackers target exposed remote access services. The project also demonstrates how Event Viewer can be used to monitor authentication behavior, investigate failed login patterns, and support incident response activities.
+The lab environment was built using VirtualBox with:
 
-The environment was built using VirtualBox with Kali Linux acting as the attacker machine and Windows Server 2022 serving as the target system. Controlled attack simulations were performed using Hydra to generate authentication events for analysis and defensive monitoring.
+- Kali Linux acting as the attacker machine
+- Windows Server 2022 acting as the victim machine
 
-This project highlights key SOC concepts including:
+The project focuses on:
 
-- Windows authentication log analysis
-- RDP brute-force attack detection
-- Event ID investigation
-- Incident timeline analysis
-- MITRE ATT&CK technique mapping
-- Security hardening and mitigation strategies
-- SOC monitoring and incident response workflows
+- Windows Security Event Log analysis
+- RDP authentication monitoring
+- Failed and successful logon investigation
+- Event ID analysis
+- PowerShell-based log hunting
+- SOC investigation workflow
+- MITRE ATT&CK mapping
 
-<br><br>
+During the simulation, multiple failed and successful RDP authentication attempts were generated and investigated using Windows Event Viewer and PowerShell.
 
-## 🎯 Objectives
+<br>
 
-- Simulate controlled RDP brute-force attacks in a virtual lab environment
-- Analyze Windows Security Event Logs related to authentication activity
-- Investigate Event IDs associated with successful and failed login attempts
-- Understand how SOC analysts identify suspicious authentication behavior
-- Perform attack timeline analysis using Windows Event Viewer
-- Apply MITRE ATT&CK framework mapping to RDP attack techniques
-- Learn defensive security practices for protecting exposed RDP services
-- Implement mitigation and hardening recommendations to reduce attack surface
-- Develop hands-on experience with SOC investigation and incident response concepts
+# 🎯 Objectives
 
-<br><br>
+- Simulate RDP authentication activity in a controlled lab environment
+- Analyze Windows Security Event Logs
+- Investigate Event IDs related to authentication activity
+- Understand how SOC analysts investigate suspicious login behavior
+- Perform PowerShell-based log hunting
+- Identify failed and successful RDP authentication attempts
+- Correlate authentication events with source IP addresses
+- Apply MITRE ATT&CK mapping to attack behavior
+- Learn defensive monitoring concepts used in SOC environments
 
-## 🏗️ Lab Architecture
+<br>
 
-The lab environment was designed in a controlled virtualized setup to simulate real-world RDP brute-force attack scenarios and authentication log analysis workflows commonly investigated by Security Operations Center (SOC) analysts.
+# 🏗️ Lab Architecture
 
-### Environment Configuration
+## Environment Configuration
 
 | Component | Description |
 |-----------|-------------|
 | Attacker Machine | Kali Linux |
 | Victim Machine | Windows Server 2022 |
 | Virtualization Platform | VirtualBox |
-| Attack Tool | Hydra |
+| Network Configuration | NAT + Host-Only Adapter |
 | Monitoring Tool | Windows Event Viewer |
-| Protocol Targeted | Remote Desktop Protocol (RDP) |
+| Log Hunting Tool | PowerShell |
+| Targeted Protocol | RDP (Port 3389) |
 
-### Lab Workflow
+<br>
 
-1. Kali Linux was configured as the attacker machine.
-2. Windows Server 2022 was configured with Remote Desktop Protocol (RDP) enabled.
-3. Controlled brute-force login attempts were performed using Hydra.
-4. Windows Security Event Logs recorded authentication activity.
-5. Event Viewer was used to investigate failed and successful login attempts.
-6. Attack behavior, Event IDs, and mitigation strategies were analyzed as part of the SOC investigation workflow.
+## Lab Workflow
 
-<br><br>
+1. Configured Kali Linux and Windows Server 2022 in a virtual lab environment
+2. Enabled Remote Desktop Protocol (RDP) on Windows Server
+3. Created a dedicated RDP test user account
+4. Verified network connectivity between both systems
+5. Generated successful and failed RDP authentication attempts
+6. Investigated Windows Security Event Logs
+7. Performed PowerShell-based event hunting and authentication analysis
 
-## 🖼️ Architecture Diagram
+<br>
+
+# 🖼️ Architecture Diagram
 
 <p align="center">
   <img src="Diagrams/architecture-diagram.png" width="850"/>
 </p>
 
-<br><br>
+<br>
 
-<br><br>
-
-## 🛠️ Tools & Technologies Used
+# 🛠️ Tools & Technologies Used
 
 | Tool / Technology | Purpose |
 |-------------------|---------|
-| Kali Linux | Attacker machine used to simulate brute-force attacks |
-| Windows Server 2022 | Victim machine targeted during the attack simulation |
-| Hydra | Password brute-forcing tool used for RDP attack attempts |
-| Windows Event Viewer | Monitoring and analysis of authentication logs |
-| VirtualBox | Virtualized lab environment setup |
-| RDP Protocol | Remote access protocol targeted during the attack |
+| Kali Linux | Authentication testing |
+| Windows Server 2022 | Target system |
+| Windows Event Viewer | Security log analysis |
+| PowerShell | Event hunting and filtering |
+| VirtualBox | Virtual lab environment |
+| RDP | Remote authentication protocol |
 
-### Technical Skills Demonstrated
+<br>
+
+## Technical Skills Demonstrated
 
 - Windows Event Log Analysis
-- RDP Attack Detection
 - Authentication Monitoring
-- Event ID Investigation
+- RDP Security Investigation
+- PowerShell Event Hunting
+- Event ID Analysis
+- Incident Investigation
 - MITRE ATT&CK Mapping
+- Threat Detection Concepts
 - SOC Investigation Workflow
-- Security Hardening Techniques
 
-<br><br>
+<br>
 
-## 🔐 Key Security Concepts Covered
+# ⚔️ Attack Simulation Workflow
 
-- RDP Brute Force Attacks
-- Authentication Monitoring
-- Windows Security Event Analysis
-- Event ID Investigation
-- Credential Access Techniques
-- Incident Timeline Analysis
-- Remote Access Security
-- MITRE ATT&CK Framework
-- SOC Investigation Workflow
-- Security Hardening
+## Step 1 — Environment Preparation
 
-<br><br>
+A controlled lab environment was created using VirtualBox with Kali Linux and Windows Server 2022.
 
-## ⚔️ Attack Simulation Workflow
+<br>
 
-### Step 1 — Environment Preparation
+## Step 2 — RDP Configuration
 
-A virtual lab environment was created using VirtualBox. Kali Linux was configured as the attacker machine, while Windows Server 2022 was configured as the target system with Remote Desktop Protocol (RDP) enabled.
+RDP was enabled on Windows Server 2022 and port 3389 availability was verified.
 
-### Step 2 — RDP Enumeration
+<br>
 
-The target Windows machine IP address was identified, and RDP connectivity was verified before initiating the attack simulation.
+## Step 3 — User Account Configuration
 
-### Step 3 — Brute-Force Attack Simulation
+A dedicated user account named `socuser` was created and added to the Remote Desktop Users group.
 
-Hydra was used to perform controlled RDP brute-force login attempts against the Windows Server 2022 machine in order to generate authentication-related security events.
+<br>
 
-### Step 4 — Authentication Log Generation
+## Step 4 — Authentication Testing
 
-Repeated login attempts generated Windows Security Event Logs associated with successful and failed authentication activities.
+Successful and failed RDP login attempts were generated from Kali Linux.
 
-### Step 5 — Security Log Investigation
+<br>
 
-Windows Event Viewer was used to analyze Event IDs related to authentication behavior and identify suspicious login patterns commonly associated with brute-force attacks.
+## Step 5 — Event Log Investigation
 
-### Step 6 — Defensive Analysis
+Windows Security Logs were analyzed using:
 
-The generated logs, attack timeline, and authentication events were reviewed to understand attack behavior and evaluate defensive monitoring techniques used in SOC environments.
+- Event Viewer
+- PowerShell log hunting commands
 
-<br><br>
+<br>
 
-## 📊 Windows Event Log Analysis
+## Step 6 — Detection Analysis
 
-### Important Windows Event IDs
+Authentication events were correlated using:
+
+- Event IDs
+- Source IP addresses
+- Logon Types
+- Authentication timestamps
+
+<br>
+
+# 📊 Windows Event Log Analysis
+
+## Important Windows Event IDs
 
 | Event ID | Description |
 |----------|-------------|
@@ -177,96 +193,223 @@ The generated logs, attack timeline, and authentication events were reviewed to 
 | 4776 | NTLM Authentication |
 | 4672 | Special Privileges Assigned |
 
-### Event Analysis
+<br>
 
-During the attack simulation, Windows Security Event Logs captured multiple failed authentication attempts associated with the RDP brute-force activity. Event ID 4625 was repeatedly generated as invalid login attempts were performed against the target system.
+## Event ID 4625 — Failed Authentication
 
-The authentication logs provided visibility into:
+Event ID 4625 was generated during failed RDP authentication attempts.
 
-- Failed login attempts
-- Authentication patterns
-- Login timestamps
-- Source system activity
-- Account targeting behavior
+The investigation identified:
 
-These logs are commonly investigated by SOC analysts to detect suspicious authentication activity and identify potential brute-force attacks targeting exposed remote access services.
+- Invalid password attempts
+- Source IP address
+- Failed authentication patterns
+- NTLM authentication activity
+- Remote login behavior
 
-<br><br>
+<br>
 
-## 🧠 MITRE ATT&CK Mapping
+## Event ID 4624 — Successful Authentication
+
+Event ID 4624 was generated after successful RDP authentication.
+
+The logs confirmed:
+
+- Successful remote login activity
+- User session creation
+- RDP authentication success
+- Logon Type 10 activity
+- Source system identification
+
+<br>
+
+# 🔍 Detection & Investigation Findings
+
+The investigation revealed repeated failed authentication attempts originating from the Kali Linux system targeting the Windows Server 2022 machine over RDP.
+
+Key findings included:
+
+- Multiple failed RDP login attempts
+- Event ID 4625 authentication failures
+- Successful Event ID 4624 RDP logins
+- NTLM authentication activity
+- Logon Type 10 associated with RDP access
+- Source IP correlation with attacker system
+
+This workflow demonstrates how SOC analysts investigate suspicious authentication activity and identify potential brute-force behavior within Windows environments.
+
+<br>
+
+# 🚨 Indicators of Compromise (IOCs)
+
+| IOC Type | Observed Value |
+|----------|----------------|
+| Source IP Address | 192.168.56.10 |
+| Target System | Windows Server 2022 |
+| Attack Method | RDP Authentication Attempts |
+| Failed Log Event | Event ID 4625 |
+| Successful Log Event | Event ID 4624 |
+| Authentication Protocol | NTLM |
+| Target User Account | socuser |
+
+<br>
+
+# 🧠 MITRE ATT&CK Mapping
 
 | Technique | MITRE ATT&CK ID | Description |
 |-----------|-----------------|-------------|
-| Brute Force | T1110 | Repeated login attempts using multiple password combinations |
-| Remote Services | T1021.001 | Abuse of Remote Desktop Protocol (RDP) for remote access |
-| Valid Accounts | T1078 | Attempted use of legitimate credentials for unauthorized access |
+| Brute Force | T1110 | Repeated authentication attempts |
+| Remote Services | T1021.001 | Remote Desktop Protocol abuse |
+| Valid Accounts | T1078 | Use of legitimate credentials |
 
-### MITRE Analysis
+<br>
 
-The simulated attack behavior aligns with credential access and remote access techniques documented in the MITRE ATT&CK framework. These techniques are commonly associated with brute-force attacks targeting exposed RDP services in enterprise environments.
+## MITRE Analysis
 
-<br><br>
+The observed behavior aligns with authentication attack techniques commonly associated with brute-force activity targeting exposed RDP services.
 
-## 🕒 Incident Timeline
+The project demonstrates how Windows authentication logs can help SOC analysts identify suspicious remote access behavior.
+
+<br>
+
+# 💻 PowerShell Log Hunting
+
+## Failed Authentication Events — Event ID 4625
+
+```powershell
+Get-WinEvent -LogName Security | Where-Object {$_.Id -eq 4625}
+```
+
+<br>
+
+## Successful Authentication Events — Event ID 4624
+
+```powershell
+Get-WinEvent -LogName Security | Where-Object {$_.Id -eq 4624}
+```
+
+<br>
+
+## PowerShell Investigation Purpose
+
+These commands were used to:
+
+- Filter Windows authentication events
+- Investigate failed logon attempts
+- Identify successful RDP authentication activity
+- Perform manual event hunting
+- Understand Windows Security Log behavior
+
+<br>
+
+# 🕒 Incident Timeline
 
 | Time | Activity |
 |------|-----------|
 | 10:01 | Kali Linux attacker machine initialized |
-| 10:02 | RDP service enumeration performed |
-| 10:03 | Hydra brute-force attack initiated |
-| 10:04 | Multiple failed login attempts generated |
-| 10:05 | Windows Event ID 4625 logs recorded |
-| 10:06 | Authentication log analysis performed |
-| 10:08 | Suspicious authentication activity confirmed |
-| 10:10 | Mitigation and hardening review conducted |
+| 10:02 | Network connectivity verification performed |
+| 10:03 | RDP configuration validated |
+| 10:04 | Failed authentication attempts generated |
+| 10:05 | Event ID 4625 logs recorded |
+| 10:06 | Successful RDP authentication performed |
+| 10:07 | Event ID 4624 logs recorded |
+| 10:08 | Windows Event Log investigation performed |
+| 10:10 | PowerShell log hunting executed |
+| 10:12 | Authentication analysis completed |
 
-### Timeline Analysis
+<br>
 
-The incident timeline demonstrates how repeated failed login attempts can rapidly generate authentication events within Windows Security Logs. Timeline analysis is an important SOC investigation technique used to reconstruct attacker activity and identify suspicious behavior patterns.
+# 🛡️ Mitigation Recommendations
 
-<br><br>
-
-## 🛡️ Mitigation Recommendations
-
-### Recommended Security Controls
-
-- Enable Multi-Factor Authentication (MFA) for remote access services
-- Restrict RDP access to VPN users only
+- Enable Multi-Factor Authentication (MFA)
+- Restrict RDP access using VPNs
 - Implement account lockout policies
-- Enforce strong password requirements
+- Enforce strong password policies
 - Disable unnecessary remote access exposure
-- Limit public-facing RDP services
-- Monitor Windows authentication logs regularly
-- Apply firewall restrictions for remote access ports
+- Monitor Windows Security Logs regularly
+- Apply firewall restrictions for RDP services
+- Enable centralized logging solutions
+- Perform continuous authentication monitoring
 
-### Security Impact
+<br>
 
-Implementing these controls significantly reduces the risk of brute-force attacks targeting exposed Windows RDP services and improves defensive monitoring capabilities within enterprise environments.
+# 📚 Lessons Learned
 
-<br><br>
+- Importance of Windows authentication monitoring
+- Risks associated with exposed RDP services
+- Importance of Event ID analysis during investigations
+- Value of PowerShell-based log hunting
+- Understanding Logon Type 10 for RDP activity
+- Importance of correlating failed and successful authentication events
+- Benefits of proactive security monitoring
 
-## 📚 Lessons Learned
+<br>
 
-- Importance of monitoring Windows authentication logs
-- Risks associated with publicly exposed RDP services
-- Value of Event ID analysis during incident investigations
-- Importance of proactive security monitoring and hardening
-- Benefits of implementing MFA and account lockout protections
-- Understanding how brute-force attacks generate authentication patterns within Windows Security Logs
+## Project Outcome
 
-### Project Outcome
+This project provided hands-on experience with:
 
-This project provided hands-on experience with Windows authentication monitoring, RDP attack detection concepts, and SOC investigation workflows commonly used in enterprise cybersecurity environments.
+- Windows Event Log investigation
+- Authentication monitoring
+- PowerShell event hunting
+- RDP security analysis
+- Incident investigation workflow
+- SOC detection concepts
+- Authentication event correlation
 
-<br><br>
+<br>
 
-## 👩‍💻 About the Analyst
+# 🖼️ Screenshots
 
-**Priyanka Rane**
+The following screenshots document the complete SOC investigation workflow performed during this project.
+
+| Screenshot | Description |
+|------------|-------------|
+| 01-lab-setup.png | VirtualBox lab environment setup |
+| 02-kali-to-windows-connectivity.jpg | Connectivity verification from Kali Linux |
+| 03-windows-to-kali-connectivity.jpg | Connectivity verification from Windows Server |
+| 04-rdp-enabled-configuration.jpg | RDP enabled on Windows Server 2022 |
+| 05-rdp-port-verification.jpg | Verification of RDP port 3389 |
+| 06-test-user-account-creation.jpg | Creation of SOC test user |
+| 07-test-user-account-created.jpg | Verification of created user account |
+| 08-add-user-to-remote-desktop-users-group.jpg | Adding user to Remote Desktop Users group |
+| 09-rdp-user-group-assignment.jpg | Verification of RDP group assignment |
+| 10-rdp-successful-authentication-command.png | Successful RDP authentication command |
+| 11-successful-rdp-login-from-kali-to-windows-server.jpg | Successful RDP session |
+| 12-rdp-failed-login-attempts-from-kali.png | Failed RDP authentication attempts |
+| 13-eventid-4625-failed-rdp-logon-analysis.jpg | Event ID 4625 investigation |
+| 14-failed-rdp-authentication-event-4625.jpg | Failed authentication log analysis |
+| 15-successful-rdp-authentication-event-4624-logon-type.jpg | Event ID 4624 analysis |
+| 16-security-log-authentication-analysis-overview.jpg | Windows Security Log investigation |
+| 17-eventid-4625-failed-logon-powershell-query.jpg | PowerShell query for failed logons |
+| 18-eventid-4624-successful-logon-powershell-query.jpg | PowerShell query for successful logons |
+
+<br>
+
+# 📌 Investigation Evidence Summary
+
+The screenshots provide evidence of:
+
+- Lab configuration
+- Network connectivity testing
+- RDP configuration
+- Authentication testing
+- Windows Security Log analysis
+- Event ID investigation
+- PowerShell-based event hunting
+- SOC investigation workflow
+
+<br>
+
+# 👩‍💻 About the Analyst
+
+## Priyanka Rane
+
 SOC Analyst L1 | Threat Detection & Incident Response
 
 📧 ranepriyanka567@gmail.com
+🔗 LinkedIn: https://www.linkedin.com/in/priyanka-rane-606a71257/
 
-🔗 [LinkedIn](https://www.linkedin.com/in/priyanka-rane-606a71257/)
+<br>
 
-## ⭐ If you found this project useful, feel free to star the repository.
+⭐ If you found this project useful, feel free to star the repository.
