@@ -427,6 +427,7 @@ The screenshots above provide documented evidence of:
 SOC Analyst L1 | Threat Detection & Incident Response
 
 📧 ranepriyanka567@gmail.com
+
 🔗 LinkedIn: https://www.linkedin.com/in/priyanka-rane-606a71257/
 
 <br>
