@@ -101,11 +101,29 @@ During the simulation, multiple failed and successful RDP authentication attempt
 
 <br>
 
-# 🖼️ Architecture Diagram
+## 🖼️ Architecture Diagram
 
-<p align="center">
-  <img src="Diagrams/architecture-diagram.png" width="850"/>
-</p>
+```mermaid
+flowchart LR
+
+    subgraph LAB[VirtualBox Lab Environment]
+
+        A[Kali Linux<br>Attacker Machine<br>192.168.56.10]
+
+        B[Windows Server 2022<br>Victim Machine<br>192.168.56.110<br>RDP Enabled]
+
+        A -- RDP Authentication<br>Port 3389 --> B
+
+        B --> C[Windows Event Viewer<br>Security Log Analysis<br>Event ID 4624<br>Event ID 4625]
+
+        B --> D[PowerShell Event Hunting<br>Authentication Investigation<br>Get-WinEvent]
+
+        C --> E[SOC Investigation Workflow]
+
+        D --> E
+
+    end
+```
 
 <br>
 
