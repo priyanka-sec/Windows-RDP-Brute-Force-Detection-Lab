@@ -383,39 +383,40 @@ The following screenshots document the complete SOC investigation workflow perfo
 
 | Screenshot | Description |
 |------------|-------------|
-| 01-lab-setup.png | VirtualBox lab environment setup |
-| 02-kali-to-windows-connectivity.jpg | Connectivity verification from Kali Linux |
-| 03-windows-to-kali-connectivity.jpg | Connectivity verification from Windows Server |
-| 04-rdp-enabled-configuration.jpg | RDP enabled on Windows Server 2022 |
-| 05-rdp-port-verification.jpg | Verification of RDP port 3389 |
-| 06-test-user-account-creation.jpg | Creation of SOC test user |
-| 07-test-user-account-created.jpg | Verification of created user account |
-| 08-add-user-to-remote-desktop-users-group.jpg | Adding user to Remote Desktop Users group |
-| 09-rdp-user-group-assignment.jpg | Verification of RDP group assignment |
-| 10-rdp-successful-authentication-command.png | Successful RDP authentication command |
-| 11-successful-rdp-login-from-kali-to-windows-server.jpg | Successful RDP session |
-| 12-rdp-failed-login-attempts-from-kali.png | Failed RDP authentication attempts |
-| 13-eventid-4625-failed-rdp-logon-analysis.jpg | Event ID 4625 investigation |
-| 14-failed-rdp-authentication-event-4625.jpg | Failed authentication log analysis |
-| 15-successful-rdp-authentication-event-4624-logon-type.jpg | Event ID 4624 analysis |
-| 16-security-log-authentication-analysis-overview.jpg | Windows Security Log investigation |
-| 17-eventid-4625-failed-logon-powershell-query.jpg | PowerShell query for failed logons |
-| 18-eventid-4624-successful-logon-powershell-query.jpg | PowerShell query for successful logons |
+| [01-lab-setup.png](Screenshots/01-lab-setup.png) | VirtualBox lab environment setup |
+| [02-kali-to-windows-connectivity.jpg](Screenshots/02-kali-to-windows-connectivity.jpg) | Connectivity verification from Kali Linux |
+| [03-windows-to-kali-connectivity.jpg](Screenshots/03-windows-to-kali-connectivity.jpg) | Connectivity verification from Windows Server |
+| [04-rdp-enabled-configuration.jpg](Screenshots/04-rdp-enabled-configuration.jpg) | RDP enabled on Windows Server 2022 |
+| [05-rdp-port-verification.jpg](Screenshots/05-rdp-port-verification.jpg) | Verification of RDP port 3389 |
+| [06-test-user-account-creation.jpg](Screenshots/06-test-user-account-creation.jpg) | Creation of SOC test user |
+| [07-test-user-account-created.jpg](Screenshots/07-test-user-account-created.jpg) | Verification of created user account |
+| [08-add-user-to-remote-desktop-users-group.jpg](Screenshots/08-add-user-to-remote-desktop-users-group.jpg) | Adding user to Remote Desktop Users group |
+| [09-rdp-user-group-assignment.jpg](Screenshots/09-rdp-user-group-assignment.jpg) | Verification of RDP group assignment |
+| [10-rdp-successful-authentication-command.png](Screenshots/10-rdp-successful-authentication-command.png) | Successful RDP authentication command |
+| [11-successful-rdp-login-from-kali-to-windows-server.jpg](Screenshots/11-successful-rdp-login-from-kali-to-windows-server.jpg) | Successful RDP session |
+| [12-rdp-failed-login-attempts-from-kali.png](Screenshots/12-rdp-failed-login-attempts-from-kali.png) | Failed RDP authentication attempts |
+| [13-eventid-4625-failed-rdp-logon-analysis.jpg](Screenshots/13-eventid-4625-failed-rdp-logon-analysis.jpg) | Event ID 4625 investigation |
+| [14-failed-rdp-authentication-event-4625.jpg](Screenshots/14-failed-rdp-authentication-event-4625.jpg) | Failed authentication log analysis |
+| [15-successful-rdp-authentication-event-4624-logon-type.jpg](Screenshots/15-successful-rdp-authentication-event-4624-logon-type.jpg) | Event ID 4624 analysis |
+| [16-security-log-authentication-analysis-overview.jpg](Screenshots/16-security-log-authentication-analysis-overview.jpg) | Windows Security Log investigation |
+| [17-eventid-4625-failed-logon-powershell-query.jpg](Screenshots/17-eventid-4625-failed-logon-powershell-query.jpg) | PowerShell query for failed logons |
+| [18-eventid-4624-successful-logon-powershell-query.jpg](Screenshots/18-eventid-4624-successful-logon-powershell-query.jpg) | PowerShell query for successful logons |
+
 
 <br>
 
 # 📌 Investigation Evidence Summary
 
-The screenshots provide evidence of:
+The screenshots above provide documented evidence of:
 
-- Lab configuration
-- Network connectivity testing
-- RDP configuration
-- Authentication testing
-- Windows Security Log analysis
-- Event ID investigation
-- PowerShell-based event hunting
-- SOC investigation workflow
+- RDP environment configuration
+- Network connectivity validation
+- Authentication testing workflow
+- Successful and failed RDP login attempts
+- Windows Security Event Log investigation
+- Event ID 4624 and 4625 analysis
+- PowerShell-based authentication hunting
+- SOC investigation and detection workflow
 
 <br>
 
