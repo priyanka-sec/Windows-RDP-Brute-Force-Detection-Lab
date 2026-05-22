@@ -83,8 +83,10 @@ During the simulation, multiple failed and successful RDP authentication attempt
 | Victim Machine | Windows Server 2022 |
 | Virtualization Platform | VirtualBox |
 | Network Configuration | NAT + Host-Only Adapter |
-| Monitoring Tool | Windows Event Viewer |
-| Log Hunting Tool | PowerShell |
+| Monitoring Tool | Windows Event Viewer + Splunk Enterprise |
+| Log Hunting Tool | PowerShell + Splunk SPL |
+| SIEM | Splunk Enterprise (Host Machine) |
+| Log Forwarding | Splunk Universal Forwarder + Sysmon |
 | Targeted Protocol | RDP (Port 3389) |
 
 <br>
