@@ -10,7 +10,7 @@ RDP Authentication Monitoring, Windows Event Log Investigation & SOC Detection W
   <img src="https://img.shields.io/badge/Victim-Windows%20Server%202022-blue?style=flat-square"/>
   <img src="https://img.shields.io/badge/Monitoring-Windows%20Event%20Viewer-yellow?style=flat-square"/>
   <img src="https://img.shields.io/badge/Analysis-PowerShell-blueviolet?style=flat-square"/>
-  <img src="https://img.shields.io/badge/SIEM-Splunk%20Enterprise-black?style=flat-square"/>
+  <img src="https://img.shields.io/badge/SIEM-Splunk%20Enterprise-green?style=flat-square"/>
   <img src="https://img.shields.io/badge/Telemetry-Sysmon-blue?style=flat-square"/>
   <img src="https://img.shields.io/badge/Status-Completed-green?style=flat-square"/>
 </p>
