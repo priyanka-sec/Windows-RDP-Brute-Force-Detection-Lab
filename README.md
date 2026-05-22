@@ -57,7 +57,15 @@ The project focuses on:
 - SOC investigation workflow
 - MITRE ATT&CK mapping
 
-During the simulation, multiple failed and successful RDP authentication attempts were generated and investigated using Windows Event Viewer and PowerShell.
+During the simulation, multiple failed and successful RDP authentication attempts were generated from Kali Linux against Windows Server 2022. Authentication logs were collected, forwarded to Splunk Enterprise SIEM, and investigated using Windows Event Viewer, PowerShell, Sysmon, and Splunk SPL queries.
+
+The investigation focused on detecting:
+- Failed RDP authentication attempts (Event ID 4625)
+- Successful RDP compromise confirmation (Event ID 4624 - Logon Type 10)
+- Authentication source correlation
+- IOC identification
+- SIEM-based detection workflows
+- Post-authentication investigation concepts
 
 <br>
 
@@ -101,7 +109,10 @@ During the simulation, multiple failed and successful RDP authentication attempt
 4. Verified network connectivity between both systems
 5. Generated successful and failed RDP authentication attempts
 6. Investigated Windows Security Event Logs
-7. Performed PowerShell-based event hunting and authentication analysis
+7. Installed Sysmon for enhanced telemetry collection
+8. Configured Splunk Universal Forwarder on Windows Server 2022
+9. Forwarded Windows Security Logs into Splunk Enterprise SIEM
+10. Performed SIEM-based authentication investigation using SPL queries
 
 <br>
 
