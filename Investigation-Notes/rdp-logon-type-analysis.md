@@ -4,7 +4,7 @@
 **Analyst:** Priyanka Rane — SOC L1
 **Date:** 26 May 2026
 
----
+<br><br>
 
 ## Why Logon Type Matters in SOC Investigations
 
@@ -12,7 +12,7 @@ When investigating authentication events, Logon Type tells
 a SOC analyst HOW the login occurred. This is critical for
 understanding the attacker's access method and impact.
 
----
+<br><br>
 
 ## Complete Logon Type Reference
 
@@ -28,7 +28,7 @@ understanding the attacker's access method and impact.
 | 10 | RemoteInteractive | RDP — Terminal Services | HIGH |
 | 11 | CachedInteractive | Cached domain credentials | Medium |
 
----
+<br><br>
 
 ## Observed in This Investigation
 
@@ -39,7 +39,7 @@ session on the Windows Server 2022 machine. The attacker
 had complete graphical access to the server — identical
 to sitting physically in front of the machine.
 
----
+<br><br>
 
 ## Impact of Logon Type 10 Access
 
@@ -52,7 +52,7 @@ With an active RDP session the attacker could:
 - Move laterally to other systems
 - Establish persistence via scheduled tasks or registry
 
----
+<br><br>
 
 ## Why This Escalates Severity
 
