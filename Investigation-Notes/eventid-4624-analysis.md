@@ -43,10 +43,13 @@ source IP confirms the attacker successfully gained access.
 ## Attack Success Confirmation Query
 
 ```splunk
-index=main (EventCode=4625 OR EventCode=4624)
-| eval event_type=if(EventCode=4624,"SUCCESS","FAILURE")
-| table _time, event_type, Account_Name
-| sort _time
+index=main (EventCode=4624 OR EventCode=4625)
+| eval event_type=case(
+    EventCode=4624,"SUCCESS",
+    EventCode=4625,"FAILURE"
+)
+| table _time EventCode event_type Account_Name Logon_Type Source_Network_Address
+| sort - _time
 ```
 
 **Result:** Chain of FAILURE events ending in SUCCESS —
