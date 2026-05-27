@@ -20,7 +20,7 @@ SIEM to detect, correlate, and classify the RDP brute force attack.
 ### Primary EventCodes Monitored
 
 | EventCode | Description | Detection Value |
-|<br><br>|<br><br>|<br><br>|
+|---|---|
 | 4625 | Failed logon attempt | Primary brute force indicator |
 | 4624 | Successful logon | Confirms attack success — breach indicator |
 | 4776 | NTLM credential validation | Authentication protocol weakness |
@@ -38,7 +38,7 @@ More than 20 events = HIGH. More than 50 events = CRITICAL.
 ### Sysmon EventCodes Used
 
 | EventCode | Description | What It Detected |
-|<br><br>|<br><br>|<br><br>|
+|---|---|
 | 1 | Process Creation | Post-compromise process execution hunting |
 | 3 | Network Connection | Attacker IP network activity |
 | 10 | Process Access | LSASS access — credential dumping detection |
@@ -83,7 +83,7 @@ This alert was classified as **TRUE POSITIVE** based on:
 ## False Positive Considerations
 
 | Scenario | Ruled Out Because |
-|<br><br>|<br><br>|
+|---|---|
 | Admin testing RDP | No change request or maintenance window active |
 | Vulnerability scanner | Scanner IPs are whitelisted — 192.168.56.10 is not |
 | User forgot password | 142 attempts in 2 minutes — impossible for human user |
