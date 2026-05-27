@@ -1,1 +1,52 @@
+# ============================================
+# SOC Investigation — EventID 4625 Query
+# Failed RDP Authentication Detection
+# Analyst: Priyanka Rane
+# Date: 26 May 2026
+# ============================================
 
+# Query 1 — Get all failed logins
+Get-WinEvent -LogName Security |
+Where-Object { $_.Id -eq 4625 } |
+Select-Object TimeCreated, Id, Message |
+Format-List
+
+# Query 2 — Count failed logins per time window
+Get-WinEvent -LogName Security |
+Where-Object { $_.Id -eq 4625 } |
+Group-Object { $_.TimeCreated.ToString("yyyy-MM-dd HH:mm") } |
+Select-Object Count, Name |
+Sort-Object Count -Descending
+
+# Query 3 — Get failed logins with full details
+Get-WinEvent -LogName Security -FilterHashtable @{
+    LogName = 'Security'
+    Id = 4625
+    StartTime = (Get-Date).AddHours(-1)
+} | ForEach-Object {
+    $xml = [xml]$_.ToXml()
+    [PSCustomObject]@{
+        TimeCreated    = $_.TimeCreated
+        TargetUser     = $xml.Event.EventData.Data |
+                         Where-Object Name -eq 'TargetUserName' |
+                         Select-Object -ExpandProperty '#text'
+        LogonType      = $xml.Event.EventData.Data |
+                         Where-Object Name -eq 'LogonType' |
+                         Select-Object -ExpandProperty '#text'
+        SourceIP       = $xml.Event.EventData.Data |
+                         Where-Object Name -eq 'IpAddress' |
+                         Select-Object -ExpandProperty '#text'
+        FailureReason  = $xml.Event.EventData.Data |
+                         Where-Object Name -eq 'FailureReason' |
+                         Select-Object -ExpandProperty '#text'
+    }
+} | Format-Table -AutoSize
+
+# ============================================
+# SOC Analyst Note:
+# Logon Type 10 = RemoteInteractive (RDP)
+# Multiple failures from same IP = Brute Force
+# Threshold: >5 attempts = suspicious
+#            >20 attempts = HIGH severity
+#            >50 attempts = CRITICAL severity
+# ============================================
