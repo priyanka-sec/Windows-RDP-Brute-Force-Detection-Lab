@@ -1,1 +1,47 @@
+# ============================================
+# SOC Investigation — EventID 4624 Query
+# Successful RDP Authentication Detection
+# Analyst: Priyanka Rane
+# Date: 26 May 2026
+# ============================================
 
+# Query 1 — Get all successful logins
+Get-WinEvent -LogName Security |
+Where-Object { $_.Id -eq 4624 } |
+Select-Object TimeCreated, Id, Message |
+Format-List
+
+# Query 2 — Get successful RDP logins only (Logon Type 10)
+Get-WinEvent -LogName Security -FilterHashtable @{
+    LogName = 'Security'
+    Id = 4624
+    StartTime = (Get-Date).AddHours(-1)
+} | ForEach-Object {
+    $xml = [xml]$_.ToXml()
+    $logonType = $xml.Event.EventData.Data |
+                 Where-Object Name -eq 'LogonType' |
+                 Select-Object -ExpandProperty '#text'
+    if ($logonType -eq '10') {
+        [PSCustomObject]@{
+            TimeCreated  = $_.TimeCreated
+            TargetUser   = $xml.Event.EventData.Data |
+                           Where-Object Name -eq 'TargetUserName' |
+                           Select-Object -ExpandProperty '#text'
+            LogonType    = $logonType
+            SourceIP     = $xml.Event.EventData.Data |
+                           Where-Object Name -eq 'IpAddress' |
+                           Select-Object -ExpandProperty '#text'
+            LogonProcess = $xml.Event.EventData.Data |
+                           Where-Object Name -eq 'LogonProcessName' |
+                           Select-Object -ExpandProperty '#text'
+        }
+    }
+} | Format-Table -AutoSize
+
+# ============================================
+# SOC Analyst Note:
+# Logon Type 10 = RemoteInteractive (RDP)
+# Successful login after multiple 4625 events
+# from same IP = Confirmed brute force success
+# Immediate action: isolate, reset, escalate
+# ============================================
