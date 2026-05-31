@@ -12,7 +12,7 @@
 | **Attack Type** | RDP Brute Force — Password Guessing |
 | **MITRE Techniques** | T1110.001 \| T1021.001 \| T1078.003 |
 
----
+<br><br>
 
 ## 1. Executive Summary
 
@@ -31,7 +31,7 @@ count-based SPL threshold alert showing 76 CRITICAL events.
 Containment was completed after confirmed breach detection.
 No post-compromise activity was detected via Sysmon analysis.
 
----
+<br><br>
 
 ## 2. Detection Method
 
@@ -87,7 +87,7 @@ index=main sourcetype="WinEventLog:Sysmon" EventCode=1
 **Result:** No malicious process execution detected
 after confirmed breach timestamp.
 
----
+<br><br>
 
 ## 3. Attack Timeline
 
@@ -105,7 +105,7 @@ after confirmed breach timestamp.
 | Post-detection | Forensics | Security logs exported as .evtx evidence | — | Event Viewer |
 | Post-detection | Escalation | L2 notified — ticket INC-RDP-2026-001 raised | — | Ticket System |
 
----
+<br><br>
 
 ## 4. Indicators of Compromise
 
@@ -117,7 +117,7 @@ after confirmed breach timestamp.
 | Failed Logins | 76 events in 15 minutes | **BRUTE FORCE CONFIRMED** | Splunk count query — CRITICAL threshold | Account lockout policy enforced |
 | Successful Login | EventCode 4624 — 9:09:57 PM | **TRUE POSITIVE — BREACH CONFIRMED** | Logon Type 10 — RDP session | Immediate containment initiated |
 
----
+<br><br>
 
 ## 5. MITRE ATT&CK Mapping
 
@@ -127,7 +127,7 @@ after confirmed breach timestamp.
 | Lateral Movement | Remote Services | Remote Desktop Protocol | T1021.001 | EventCode 4624 — Logon Type 10 confirmed |
 | Defense Evasion | Valid Accounts | Local Accounts | T1078.003 | Successful login using valid socuser credentials |
 
----
+<br><br>
 
 ## 6. Containment Actions Taken
 
@@ -145,7 +145,7 @@ attacker RDP session with Logon Type 10. Post-compromise
 investigation was required to rule out lateral movement,
 data exfiltration, or persistence mechanisms.
 
----
+<br><br>
 
 ## 7. Post-Compromise Hunt Results
 
@@ -159,7 +159,7 @@ persistence mechanisms, or data exfiltration activity.
 
 **Incident classified as contained — no post-compromise impact.**
 
----
+<br><br>
 
 ## 8. Root Cause Analysis
 
@@ -172,7 +172,7 @@ persistence mechanisms, or data exfiltration activity.
 | No real-time SIEM alerting | Detection was reactive | Deploy Splunk threshold alert |
 | No MFA on RDP accounts | Credential alone sufficient | Implement MFA on all RDP |
 
----
+<br><br>
 
 ## 9. Recommendations
 
@@ -187,7 +187,7 @@ persistence mechanisms, or data exfiltration activity.
 | MEDIUM | Enable Network Level Authentication | Adds pre-session authentication layer |
 | LOW | Disable RDP on non-essential servers | Reduces overall attack surface |
 
----
+<br><br>
 
 ## 10. Lessons Learned
 
@@ -212,7 +212,7 @@ persistence mechanisms, or data exfiltration activity.
    migrate to Kerberos-only authentication. NTLM relay
    attacks are well-documented and trivially exploitable.
 
----
+<br><br>
 
 **Analyst:** Priyanka Rane | SOC Analyst L1
 **Date:** 26 May 2026
