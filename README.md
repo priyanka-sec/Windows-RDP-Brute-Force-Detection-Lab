@@ -1,450 +1,459 @@
 <h1 align="center">🛡️ Windows RDP Brute Force Detection & SIEM Investigation Lab</h1>
 
 <h3 align="center">
-RDP Authentication Monitoring, Windows Event Log Investigation & SOC Detection Workflow
+RDP Brute Force Simulation · Windows Event Log Analysis · Splunk SIEM Detection · Sysmon Telemetry · SOC Investigation Workflow
 </h3>
 
 <p align="center">
   <img src="https://img.shields.io/badge/Platform-VirtualBox-blue?style=flat-square"/>
   <img src="https://img.shields.io/badge/Attacker-Kali%20Linux-red?style=flat-square"/>
   <img src="https://img.shields.io/badge/Victim-Windows%20Server%202022-blue?style=flat-square"/>
-  <img src="https://img.shields.io/badge/Monitoring-Windows%20Event%20Viewer-yellow?style=flat-square"/>
-  <img src="https://img.shields.io/badge/Analysis-PowerShell-blueviolet?style=flat-square"/>
   <img src="https://img.shields.io/badge/SIEM-Splunk%20Enterprise-green?style=flat-square"/>
-  <img src="https://img.shields.io/badge/Telemetry-Sysmon-blue?style=flat-square"/>
-  <img src="https://img.shields.io/badge/Status-Completed-green?style=flat-square"/>
+  <img src="https://img.shields.io/badge/Telemetry-Sysmon-orange?style=flat-square"/>
+  <img src="https://img.shields.io/badge/Log%20Forwarding-Splunk%20UF-green?style=flat-square"/>
+  <img src="https://img.shields.io/badge/MITRE%20ATT%26CK-T1110.001%20%7C%20T1021.001%20%7C%20T1078.003-red?style=flat-square"/>
+  <img src="https://img.shields.io/badge/Status-Completed-brightgreen?style=flat-square"/>
 </p>
 
-<br>
+<br><br>
 
 # 📑 Table of Contents
 
 - [Project Overview](#-project-overview)
 - [Objectives](#-objectives)
 - [Lab Architecture](#️-lab-architecture)
-- [Architecture Diagram](#️-architecture-diagram)
-- [Tools & Technologies Used](#️-tools--technologies-used)
+- [Tools & Technologies](#️-tools--technologies)
 - [Attack Simulation Workflow](#️-attack-simulation-workflow)
+- [Splunk SIEM Detection](#-splunk-siem-detection)
+- [Sysmon Deep Visibility](#-sysmon-deep-visibility)
 - [Windows Event Log Analysis](#-windows-event-log-analysis)
-- [Detection & Investigation Findings](#-detection--investigation-findings)
-- [Indicators of Compromise (IOCs)](#-indicators-of-compromise-iocs)
+- [Detection Logic](#-detection-logic)
+- [Indicators of Compromise](#-indicators-of-compromise-iocs)
 - [MITRE ATT&CK Mapping](#-mitre-attck-mapping)
-- [PowerShell Log Hunting](#-powershell-log-hunting)
 - [Incident Timeline](#-incident-timeline)
+- [Containment & Response](#️-containment--response)
 - [Mitigation Recommendations](#️-mitigation-recommendations)
 - [Lessons Learned](#-lessons-learned)
 - [Screenshots](#️-screenshots)
 - [About the Analyst](#-about-the-analyst)
 
-<br>
+<br><br>
 
 # 📌 Project Overview
 
-This project simulates suspicious Remote Desktop Protocol (RDP) authentication activity against a Windows Server 2022 system to demonstrate how SOC analysts investigate Windows authentication logs and identify potential brute-force behavior.
+This project simulates a real-world RDP brute force attack against a Windows Server 2022 environment and demonstrates a complete SOC analyst investigation workflow — from attack simulation through SIEM detection, log analysis, MITRE ATT&CK mapping, and incident response.
 
-The lab environment was built using VirtualBox with:
+**What makes this lab different from typical student projects:**
 
-- Kali Linux acting as the attacker machine
-- Windows Server 2022 acting as the victim machine
+- Real RDP authentication traffic generated from Kali Linux using xfreerdp
+- Logs forwarded live into Splunk Enterprise via Universal Forwarder
+- Sysmon deployed for deep process and network visibility
+- SPL detection queries and Sigma rules written from scratch
+- Complete incident report following SOC runbook: Detection → Triage → Containment → Escalation
+- All timestamps and findings verified against real log evidence
 
-The project focuses on:
-
-- Windows Security Event Log analysis
-- RDP authentication monitoring
-- Failed and successful logon investigation
-- Event ID analysis
-- PowerShell-based log hunting
-- SOC investigation workflow
-- MITRE ATT&CK mapping
-
-During the simulation, multiple failed and successful RDP authentication attempts were generated from Kali Linux against Windows Server 2022. Authentication logs were collected, forwarded to Splunk Enterprise SIEM, and investigated using Windows Event Viewer, PowerShell, Sysmon, and Splunk SPL queries.
-
-The investigation focused on detecting:
-- Failed RDP authentication attempts (Event ID 4625)
-- Successful RDP compromise confirmation (Event ID 4624 - Logon Type 10)
-- Authentication source correlation
-- IOC identification
-- SIEM-based detection workflows
-- Post-authentication investigation concepts
-
-<br>
+<br><br>
 
 # 🎯 Objectives
 
-- Simulate RDP authentication activity in a controlled lab environment
-- Analyze Windows Security Event Logs
-- Investigate Event IDs related to authentication activity
-- Understand how SOC analysts investigate suspicious login behavior
-- Perform PowerShell-based log hunting
-- Identify failed and successful RDP authentication attempts
-- Correlate authentication events with source IP addresses
-- Apply MITRE ATT&CK mapping to attack behavior
-- Learn defensive monitoring concepts used in SOC environments
+- Simulate RDP brute force attack in a controlled lab environment
+- Forward Windows Security logs to Splunk Enterprise in real time
+- Detect brute force pattern using SPL count-based threshold queries
+- Confirm breach using EventCode 4624 Logon Type 10 correlation
+- Hunt post-compromise activity using Sysmon EventCode 1
+- Map full attack chain to MITRE ATT&CK sub-techniques
+- Produce professional SOC incident report with real evidence
+- Write production-ready Sigma detection rule
 
-<br>
+<br><br>
 
 # 🏗️ Lab Architecture
 
 ## Environment Configuration
 
-| Component | Description |
-|-----------|-------------|
-| Attacker Machine | Kali Linux |
-| Victim Machine | Windows Server 2022 |
-| Virtualization Platform | VirtualBox |
-| Network Configuration | NAT + Host-Only Adapter |
-| Monitoring Tool | Windows Event Viewer + Splunk Enterprise |
-| Log Hunting Tool | PowerShell + Splunk SPL |
-| SIEM | Splunk Enterprise (Host Machine) |
-| Log Forwarding | Splunk Universal Forwarder + Sysmon |
-| Targeted Protocol | RDP (Port 3389) |
+| Component | Details |
+|---|---|
+| Attacker Machine | Kali Linux — 192.168.56.10 |
+| Victim Machine | Windows Server 2022 — 192.168.56.110 |
+| SOC / SIEM | Splunk Enterprise — Host Machine 192.168.56.1 |
+| Virtualization | VirtualBox — NAT + Host-Only Adapter |
+| Network | Host-Only: 192.168.56.0/24 |
+| Log Forwarding | Splunk Universal Forwarder → Splunk Enterprise (Port 9997) |
+| Deep Logging | Sysmon (SwiftOnSecurity config) |
+| Targeted Protocol | RDP — Port 3389 |
 
-<br>
-
-## Lab Workflow
-
-1. Configured Kali Linux and Windows Server 2022 in a virtual lab environment
-2. Enabled Remote Desktop Protocol (RDP) on Windows Server
-3. Created a dedicated RDP test user account
-4. Verified network connectivity between both systems
-5. Generated successful and failed RDP authentication attempts
-6. Investigated Windows Security Event Logs
-7. Installed Sysmon for enhanced telemetry collection
-8. Configured Splunk Universal Forwarder on Windows Server 2022
-9. Forwarded Windows Security Logs into Splunk Enterprise SIEM
-10. Performed SIEM-based authentication investigation using SPL queries
-
-<br>
+<br><br>
 
 ## 🖼️ Architecture Diagram
 
-```mermaid
-flowchart LR
-
-    subgraph LAB[VirtualBox Lab Environment]
-
-        A[Kali Linux<br>Attacker Machine<br>192.168.56.10]
-
-        B[Windows Server 2022<br>Victim Machine<br>192.168.56.110<br>RDP Enabled]
-
-        A -- RDP Authentication<br>Port 3389 --> B
-
-        B --> C[Windows Event Viewer<br>Security Log Analysis<br>Event ID 4624<br>Event ID 4625]
-
-        B --> D[PowerShell Event Hunting<br>Authentication Investigation<br>Get-WinEvent]
-
-        C --> E[SOC Investigation Workflow]
-
-        D --> E
-
-    end
+```
+┌─────────────────────────────────────────────────────────────┐
+│                  VirtualBox Lab Environment                  │
+│                                                             │
+│  ┌──────────────────┐        ┌──────────────────────────┐  │
+│  │   Kali Linux     │──RDP──▶│   Windows Server 2022    │  │
+│  │  192.168.56.10   │ :3389  │    192.168.56.110        │  │
+│  │   ATTACKER       │        │  Sysmon + Splunk UF      │  │
+│  └──────────────────┘        └────────────┬─────────────┘  │
+│                                           │ Logs (9997)     │
+│                                           ▼                 │
+│                              ┌──────────────────────────┐  │
+│                              │    Splunk Enterprise      │  │
+│                              │      192.168.56.1         │  │
+│                              │    SOC ANALYST VIEW       │  │
+│                              └──────────────────────────┘  │
+└─────────────────────────────────────────────────────────────┘
 ```
 
-<br>
+<br><br>
 
-# 🛠️ Tools & Technologies Used
+# 🛠️ Tools & Technologies
 
-| Tool / Technology | Purpose |
-|-------------------|---------|
-| Kali Linux | Authentication testing |
-| Windows Server 2022 | Target system |
-| Windows Event Viewer | Security log analysis |
-| PowerShell | Event hunting and filtering |
-| VirtualBox | Virtual lab environment |
-| RDP | Remote authentication protocol |
+| Tool | Purpose |
+|---|---|
+| Kali Linux | Attack simulation — xfreerdp brute force |
+| Windows Server 2022 | Target — RDP enabled, AD environment |
+| Splunk Enterprise | SIEM — log ingestion, SPL queries, alerting |
+| Splunk Universal Forwarder | Ships Windows logs → Splunk in real time |
+| Sysmon | Deep endpoint visibility — process, network, file |
+| xfreerdp | RDP authentication testing tool |
+| Windows Event Viewer | Manual log verification |
+| PowerShell | Local log hunting and validation |
+| MITRE ATT&CK Navigator | Attack technique mapping |
 
-<br>
-
-## Technical Skills Demonstrated
-
-- Windows Event Log Analysis
-- Authentication Monitoring
-- RDP Security Investigation
-- PowerShell Event Hunting
-- Event ID Analysis
-- Incident Investigation
-- MITRE ATT&CK Mapping
-- Threat Detection Concepts
-- SOC Investigation Workflow
-
-<br>
+<br><br>
 
 # ⚔️ Attack Simulation Workflow
 
-## Step 1 — Environment Preparation
+## Phase 1 — Environment Setup
 
-A controlled lab environment was created using VirtualBox with Kali Linux and Windows Server 2022.
+- Configured VirtualBox Host-Only network (192.168.56.0/24)
+- Installed Windows Server 2022 with RDP enabled on port 3389
+- Created test user account `socuser` — added to Remote Desktop Users group
+- Deployed Sysmon with SwiftOnSecurity configuration for deep logging
+- Installed Splunk Universal Forwarder — forwarding to 192.168.56.1:9997
+- Configured inputs.conf to forward Security, System, Application and Sysmon logs
 
-<br>
+## Phase 2 — Attack Execution
 
-## Step 2 — RDP Configuration
+From Kali Linux, repeated failed RDP authentication attempts were generated
+using xfreerdp with incorrect credentials:
 
-RDP was enabled on Windows Server 2022 and port 3389 availability was verified.
+```bash
+xfreerdp /u:socuser /p:'WrongPassword' /v:192.168.56.110 /cert:ignore
+```
 
-<br>
+After multiple failed attempts, a successful RDP login was performed
+using valid credentials confirming breach:
 
-## Step 3 — User Account Configuration
+```bash
+xfreerdp /u:socuser /p:'Password@123' /v:192.168.56.110 /cert:ignore
+```
 
-A dedicated user account named `socuser` was created and added to the Remote Desktop Users group.
+This generated:
+- Multiple failed authentication events — EventCode 4625
+- One successful authentication event — EventCode 4624
+- Logon Type 10 — RDP session confirmed
+- NTLM authentication logs — EventCode 4776
+- Sysmon process creation telemetry — EventCode 1
 
-<br>
+## Phase 3 — Detection & Investigation
 
-## Step 4 — Authentication Testing
+All attack events were forwarded to Splunk in real time via Universal
+Forwarder. SPL queries were used to detect, correlate, and classify
+the attack. Sysmon logs provided post-compromise process visibility.
 
-Successful and failed RDP login attempts were generated from Kali Linux.
+<br><br>
 
-<br>
+# 🔍 Splunk SIEM Detection
 
-## Step 5 — Event Log Investigation
+All logs were ingested into Splunk Enterprise via Universal Forwarder
+installed on Windows Server 2022. The following SPL queries detected
+and confirmed the attack.
 
-Windows Security Logs were analyzed using:
+## Query 1 — Brute Force Detection
 
-- Event Viewer
-- PowerShell log hunting commands
+```splunk
+index=main EventCode=4625
+| stats count by host
+| eval severity=if(count>50,"CRITICAL",if(count>20,"HIGH","MEDIUM"))
+| sort -count
+```
 
-<br>
+**Result:** WIN-TLKR5B0U5QP — count=76 — **CRITICAL**
 
-## Step 6 — Detection Analysis
+## Query 2 — Attack Success Confirmation
 
-Authentication events were correlated using:
+```splunk
+index=main (EventCode=4625 OR EventCode=4624)
+| eval event_type=if(EventCode=4624,"SUCCESS","FAILURE")
+| table _time, event_type, Account_Name
+| sort _time
+```
 
-- Event IDs
-- Source IP addresses
-- Logon Types
-- Authentication timestamps
+**Result:** Chain of FAILURE events ending in SUCCESS —
+True Positive breach confirmed.
 
-<br>
+## Query 3 — Attack Volume Timechart
+
+```splunk
+index=main EventCode=4625
+| timechart span=1m count
+```
+
+**Result:** Spike of 538 events at 12:08 — clear brute
+force pattern visible.
+
+## Query 4 — Post-Compromise Process Hunt
+
+```splunk
+index=main sourcetype="WinEventLog:Sysmon" EventCode=1
+| table _time, User, Image, CommandLine, ParentImage
+| sort -_time
+```
+
+**Result:** No malicious process execution detected.
+
+<br><br>
+
+# 🔬 Sysmon Deep Visibility
+
+Sysmon was deployed on Windows Server 2022 using the SwiftOnSecurity
+configuration providing deep endpoint visibility beyond standard
+Windows Event Logs.
+
+## Sysmon Event IDs Monitored
+
+| Sysmon EventCode | Description | SOC Value |
+|---|---|---|
+| 1 | Process Creation | Full command line of every process |
+| 3 | Network Connection | Every outbound connection with PID |
+| 7 | Image Loaded | DLL loading — detects injection |
+| 10 | Process Access | Detects Mimikatz targeting LSASS |
+| 11 | File Created | Malware dropping files |
+| 13 | Registry Value Set | Persistence mechanisms |
+
+## Key Finding
+
+Sysmon EventCode 1 confirmed no suspicious post-authentication
+process execution following the successful RDP session. The attacker
+did not execute any commands during the active session window.
+
+<br><br>
 
 # 📊 Windows Event Log Analysis
 
-## Important Windows Event IDs
+## Critical Event IDs
 
-| Event ID | Description |
-|----------|-------------|
-| 4625 | Failed Login Attempt |
-| 4624 | Successful Login |
-| 4776 | NTLM Authentication |
-| 4672 | Special Privileges Assigned |
+| Event ID | Source | Description | Count |
+|---|---|---|---|
+| 4625 | Security | Failed login attempt | 880 total |
+| 4624 | Security | Successful login — Logon Type 10 | 1 confirmed |
+| 4776 | Security | NTLM authentication attempt | Observed |
+| 4672 | Security | Special privileges assigned | Post-login |
+| Sysmon 1 | Sysmon | Process creation post-compromise | No malicious |
+| Sysmon 3 | Sysmon | Network connections | Monitored |
 
-<br>
+## Key Event Details
 
-## Event ID 4625 — Failed Authentication
+**EventCode 4625 — Failed Login**
+- Account Name: socuser
+- Source IP: 192.168.56.10
+- Workstation: kali
+- Auth Package: NTLM
+- Logged: 5/26/2026 9:09:06 PM
+- Evidence: [Screenshot 14](https://github.com/priyanka-sec/Windows-RDP-Brute-Force-Detection-Lab/blob/main/Screenshots/14-failed-rdp-authentication-event-4625.jpg)
 
-Event ID 4625 was generated during failed RDP authentication attempts.
+**EventCode 4624 — Successful Login**
+- Account Name: socuser
+- Source IP: 192.168.56.10
+- Logon Type: 10 (RemoteInteractive — RDP)
+- Logged: 5/26/2026 9:09:57 PM
+- Evidence: [Screenshot 15](https://github.com/priyanka-sec/Windows-RDP-Brute-Force-Detection-Lab/blob/main/Screenshots/15-successful-rdp-authentication-event-4624-logon-type.jpg)
 
-The investigation identified:
+<br><br>
 
-- Invalid password attempts
-- Source IP address
-- Failed authentication patterns
-- NTLM authentication activity
-- Remote login behavior
+# 🧠 Detection Logic
 
-<br>
+See full detection files in the [Detection-Logic](./Detection-Logic/) folder.
 
-## Event ID 4624 — Successful Authentication
+## Splunk Alert Rule Summary
 
-Event ID 4624 was generated after successful RDP authentication.
+- **Trigger:** Single host with >5 failed logins (EventCode 4625)
+- **Severity:** >50 = CRITICAL — >20 = HIGH — >5 = MEDIUM
+- **Result:** 76 events — CRITICAL severity confirmed
+- **Escalation:** CRITICAL alert → immediate L2 escalation
 
-The logs confirmed:
+## Sigma Rule
 
-- Successful remote login activity
-- User session creation
-- RDP authentication success
-- Logon Type 10 activity
-- Source system identification
+Production-ready Sigma rule available at:
+[Detection-Logic/sigma-rdp-bruteforce.yml](./Detection-Logic/sigma-rdp-bruteforce.yml)
 
-<br>
-
-# 🔍 Detection & Investigation Findings
-
-The investigation revealed repeated failed authentication attempts originating from the Kali Linux system targeting the Windows Server 2022 machine over RDP.
-
-Key findings included:
-
-- Multiple failed RDP login attempts
-- Event ID 4625 authentication failures
-- Successful Event ID 4624 RDP logins
-- NTLM authentication activity
-- Logon Type 10 associated with RDP access
-- Source IP correlation with attacker system
-
-This workflow demonstrates how SOC analysts investigate suspicious authentication activity and identify potential brute-force behavior within Windows environments.
-
-<br>
+<br><br>
 
 # 🚨 Indicators of Compromise (IOCs)
 
-| IOC Type | Observed Value |
-|----------|----------------|
-| Source IP Address | 192.168.56.10 |
-| Target System | Windows Server 2022 |
-| Attack Method | RDP Authentication Attempts |
-| Failed Log Event | Event ID 4625 |
-| Successful Log Event | Event ID 4624 |
-| Authentication Protocol | NTLM |
-| Target User Account | socuser |
+| IOC Type | Observed Value | Verdict | Validated Via | Action Taken |
+|---|---|---|---|---|
+| Source IP | 192.168.56.10 | **MALICIOUS** — confirmed attacker | Windows Security Log + Splunk | Blocked at Windows Firewall |
+| Target Account | socuser | **COMPROMISED** — successful login confirmed | EventCode 4624 — 9:09:57 PM — Logon Type 10 | Account disabled + password reset |
+| Auth Protocol | NTLM | **WEAK** — relay attack risk | EventCode 4776 — NtLmSsp confirmed | Kerberos enforcement recommended |
+| Failed Logins | 880 total — 76 in 15 min | **BRUTE FORCE CONFIRMED** | Splunk count query — CRITICAL | Account lockout enforced |
+| Successful Login | EventCode 4624 — 9:09:57 PM | **TRUE POSITIVE — BREACH** | Logon Type 10 — RDP session | Immediate containment initiated |
 
-<br>
+<br><br>
 
 # 🧠 MITRE ATT&CK Mapping
 
-| Technique | MITRE ATT&CK ID | Description |
-|-----------|-----------------|-------------|
-| Brute Force | T1110 | Repeated authentication attempts |
-| Remote Services | T1021.001 | Remote Desktop Protocol abuse |
-| Valid Accounts | T1078 | Use of legitimate credentials |
+| Tactic | Technique | Sub-Technique | ID | Evidence |
+|---|---|---|---|---|
+| Credential Access | Brute Force | Password Guessing | T1110.001 | 880 × EventCode 4625 targeting socuser |
+| Lateral Movement | Remote Services | Remote Desktop Protocol | T1021.001 | EventCode 4624 — Logon Type 10 confirmed |
+| Defense Evasion | Valid Accounts | Local Accounts | T1078.003 | Successful login using valid socuser credentials |
 
-<br>
-
-## MITRE Analysis
-
-The observed behavior aligns with authentication attack techniques commonly associated with brute-force activity targeting exposed RDP services.
-
-The project demonstrates how Windows authentication logs can help SOC analysts identify suspicious remote access behavior.
-
-<br>
-
-# 💻 PowerShell Log Hunting
-
-## Failed Authentication Events — Event ID 4625
-
-```powershell
-Get-WinEvent -LogName Security | Where-Object {$_.Id -eq 4625}
-```
-
-<br>
-
-## Successful Authentication Events — Event ID 4624
-
-```powershell
-Get-WinEvent -LogName Security | Where-Object {$_.Id -eq 4624}
-```
-
-<br>
-
-## PowerShell Investigation Purpose
-
-These commands were used to:
-
-- Filter Windows authentication events
-- Investigate failed logon attempts
-- Identify successful RDP authentication activity
-- Perform manual event hunting
-- Understand Windows Security Log behavior
-
-<br>
+<br><br>
 
 # 🕒 Incident Timeline
 
-| Time | Activity |
-|------|-----------|
-| 10:01 | Kali Linux attacker machine initialized |
-| 10:02 | Network connectivity verification performed |
-| 10:03 | RDP configuration validated |
-| 10:04 | Failed authentication attempts generated |
-| 10:05 | Event ID 4625 logs recorded |
-| 10:06 | Successful RDP authentication performed |
-| 10:07 | Event ID 4624 logs recorded |
-| 10:08 | Windows Event Log investigation performed |
-| 10:10 | PowerShell log hunting executed |
-| 10:12 | Authentication analysis completed |
+| Time | Phase | Event | EventCode | Evidence |
+|---|---|---|---|---|
+| 5/26/2026 9:09:06 PM | 🔴 Attack | First failed RDP login — socuser — 192.168.56.10 | 4625 | [Screenshot 14](https://github.com/priyanka-sec/Windows-RDP-Brute-Force-Detection-Lab/blob/main/Screenshots/14-failed-rdp-authentication-event-4625.jpg) |
+| 5/26/2026 9:09:07 PM | 🔴 Attack | Second failed login — NTLM confirmed | 4625 | [Screenshot 13](https://github.com/priyanka-sec/Windows-RDP-Brute-Force-Detection-Lab/blob/main/Screenshots/13-eventid-4625-failed-rdp-logon-analysis.jpg) |
+| 5/26/2026 9:09:57 PM | 🚨 Breach | Successful RDP login — Logon Type 10 | 4624 | [Screenshot 15](https://github.com/priyanka-sec/Windows-RDP-Brute-Force-Detection-Lab/blob/main/Screenshots/15-successful-rdp-authentication-event-4624-logon-type.jpg) |
+| 26/05/2026 20:24:10 | 🟡 Detection | Splunk CRITICAL alert — 76 events in 15 min | SPL | [Screenshot 25](https://github.com/priyanka-sec/Windows-RDP-Brute-Force-Detection-Lab/blob/main/Screenshots/25-splunk-bruteforce-detected.png) |
+| 26/05/2026 20:39:10 | 🟡 TP Confirmed | Success-after-failure chain — True Positive | SPL | [Screenshot 27](https://github.com/priyanka-sec/Windows-RDP-Brute-Force-Detection-Lab/blob/main/Screenshots/27-splunk-success-after-failures.png) |
+| Post-detection | 🟡 Sysmon Hunt | No malicious process found post-breach | Sysmon 1 | [Screenshot 23](https://github.com/priyanka-sec/Windows-RDP-Brute-Force-Detection-Lab/blob/main/Screenshots/23-sysmon-powershell-process-hunting.jpg) |
+| Post-detection | 🟢 Containment | IP blocked — account disabled — password reset | — | SOC Action |
+| Post-detection | 🟢 Escalation | L2 notified — INC-RDP-2026-001 raised | — | SOC Runbook |
 
-<br>
+<br><br>
+
+# 🛡️ Containment & Response
+
+## Incident ID: INC-RDP-2026-001
+## Severity: P2 — High
+## Analyst: Priyanka Rane — SOC Analyst L1
+
+## Containment Actions Taken
+
+| Action | Outcome |
+|---|---|
+| Blocked source IP 192.168.56.10 at Windows Firewall | No further RDP connections possible |
+| Disabled socuser account | Active RDP session terminated |
+| Reset socuser password | Compromised credential invalidated |
+| Exported Security logs as forensic .evtx | Evidence preserved for L2 |
+| Escalated to L2 — ticket INC-RDP-2026-001 | Post-compromise review initiated |
+
+## Post-Compromise Hunt Result
+
+Sysmon EventCode 1 searched for all process creation after
+confirmed breach at 9:09:57 PM. No malicious processes found.
+Incident classified as **contained — no post-compromise impact.**
+
+## Escalation Decision
+
+Escalated to L2 because EventCode 4624 confirmed a successful
+attacker RDP session with Logon Type 10. Post-compromise
+investigation was required before closing the incident.
+
+<br><br>
 
 # 🛡️ Mitigation Recommendations
 
-- Enable Multi-Factor Authentication (MFA)
-- Restrict RDP access using VPNs
-- Implement account lockout policies
-- Enforce strong password policies
-- Disable unnecessary remote access exposure
-- Monitor Windows Security Logs regularly
-- Apply firewall restrictions for RDP services
-- Enable centralized logging solutions
-- Perform continuous authentication monitoring
+| Priority | Recommendation | Impact |
+|---|---|---|
+| CRITICAL | Account lockout after 5 failed attempts | Stops brute force immediately |
+| CRITICAL | Restrict RDP behind VPN only | Eliminates direct attack surface |
+| CRITICAL | Enforce MFA on all RDP accounts | Credential theft becomes useless |
+| HIGH | Replace NTLM with Kerberos | Eliminates relay attack risk |
+| HIGH | Enforce 14-character minimum password | Increases crack time exponentially |
+| MEDIUM | Deploy Splunk real-time alert for 4625 | Detection within 5 minutes |
+| MEDIUM | Enable Network Level Authentication | Pre-session auth layer |
+| LOW | Disable RDP on non-essential servers | Reduces attack surface |
 
-<br>
+Full hardening guide:
+[Mitigation-Recommendations/rdp-hardening-recommendations.md](./Mitigation-Recommendations/rdp-hardening-recommendations.md)
+
+<br><br>
 
 # 📚 Lessons Learned
 
-- Importance of Windows authentication monitoring
-- Risks associated with exposed RDP services
-- Importance of Event ID analysis during investigations
-- Value of PowerShell-based log hunting
-- Understanding Logon Type 10 for RDP activity
-- Importance of correlating failed and successful authentication events
-- Benefits of proactive security monitoring
+1. **Account lockout policy is non-negotiable.** 880 attempts
+   succeeded without any automatic blocking. One Group Policy
+   change stops this attack class entirely.
 
-<br>
+2. **RDP must never be directly exposed.** Any machine with
+   port 3389 accessible on a network is an active target.
+   VPN-only access is the minimum acceptable standard.
 
-## Project Outcome
+3. **Splunk detected what manual review would have missed.**
+   The count-based threshold query identified 76 CRITICAL
+   events instantly across a 15-minute window.
 
-This project provided hands-on experience with:
+4. **Sysmon provided critical post-compromise clarity.**
+   Without Sysmon EventCode 1, confirming no malicious
+   process execution post-breach would have been impossible.
 
-- Windows Event Log investigation
-- Authentication monitoring
-- PowerShell event hunting
-- RDP security analysis
-- Incident investigation workflow
-- SOC detection concepts
-- Authentication event correlation
+5. **NTLM is a legacy risk.** Every environment should
+   migrate to Kerberos. NTLM relay attacks are trivially
+   exploitable with tools like Responder.
 
-<br>
+<br><br>
 
 # 🖼️ Screenshots
 
-The following screenshots document the complete SOC investigation workflow performed during this project.
+| # | Screenshot | Description |
+|---|---|---|
+| 01 | [Lab Setup](https://github.com/priyanka-sec/Windows-RDP-Brute-Force-Detection-Lab/blob/main/Screenshots/01-lab-setup.png) | VirtualBox lab environment |
+| 02 | [Kali → Windows Connectivity](https://github.com/priyanka-sec/Windows-RDP-Brute-Force-Detection-Lab/blob/main/Screenshots/02-kali-to-windows-connectivity.jpg) | Ping verification |
+| 03 | [Windows → Kali Connectivity](https://github.com/priyanka-sec/Windows-RDP-Brute-Force-Detection-Lab/blob/main/Screenshots/03-windows-to-kali-connectivity.jpg) | Ping verification |
+| 04 | [RDP Enabled](https://github.com/priyanka-sec/Windows-RDP-Brute-Force-Detection-Lab/blob/main/Screenshots/04-rdp-enabled-configuration.jpg) | RDP configuration on Windows Server |
+| 05 | [RDP Port Verified](https://github.com/priyanka-sec/Windows-RDP-Brute-Force-Detection-Lab/blob/main/Screenshots/05-rdp-port-verification.jpg) | Port 3389 open confirmed |
+| 06 | [User Created](https://github.com/priyanka-sec/Windows-RDP-Brute-Force-Detection-Lab/blob/main/Screenshots/06-test-user-account-creation.jpg) | socuser account creation |
+| 07 | [User Confirmed](https://github.com/priyanka-sec/Windows-RDP-Brute-Force-Detection-Lab/blob/main/Screenshots/07-test-user-account-created.jpg) | Account verification |
+| 08 | [RDP Group Assignment](https://github.com/priyanka-sec/Windows-RDP-Brute-Force-Detection-Lab/blob/main/Screenshots/08-add-user-to-remote-desktop-users-group.jpg) | User added to RDP group |
+| 09 | [Group Verified](https://github.com/priyanka-sec/Windows-RDP-Brute-Force-Detection-Lab/blob/main/Screenshots/09-rdp-user-group-assignment.jpg) | Group membership confirmed |
+| 10 | [RDP Auth Command](https://github.com/priyanka-sec/Windows-RDP-Brute-Force-Detection-Lab/blob/main/Screenshots/10-rdp-successful-authentication-command.png) | Successful RDP from Kali |
+| 11 | [Successful RDP Session](https://github.com/priyanka-sec/Windows-RDP-Brute-Force-Detection-Lab/blob/main/Screenshots/11-successful-rdp-login-from-kali-to-windows-server.jpg) | Full RDP session established |
+| 12 | [Failed Login Attempts](https://github.com/priyanka-sec/Windows-RDP-Brute-Force-Detection-Lab/blob/main/Screenshots/12-rdp-failed-login-attempts-from-kali.png) | xfreerdp failed attempts |
+| 13 | [EventID 4625 Analysis](https://github.com/priyanka-sec/Windows-RDP-Brute-Force-Detection-Lab/blob/main/Screenshots/13-eventid-4625-failed-rdp-logon-analysis.jpg) | Failed login — 5/26/2026 9:09:07 PM |
+| 14 | [4625 Log Detail](https://github.com/priyanka-sec/Windows-RDP-Brute-Force-Detection-Lab/blob/main/Screenshots/14-failed-rdp-authentication-event-4625.jpg) | Failed login — 5/26/2026 9:09:06 PM |
+| 15 | [4624 Logon Type 10](https://github.com/priyanka-sec/Windows-RDP-Brute-Force-Detection-Lab/blob/main/Screenshots/15-successful-rdp-authentication-event-4624-logon-type.jpg) | Successful login — 5/26/2026 9:09:57 PM |
+| 16 | [Security Log Overview](https://github.com/priyanka-sec/Windows-RDP-Brute-Force-Detection-Lab/blob/main/Screenshots/16-security-log-authentication-analysis-overview.jpg) | Full security log — May 26 2026 |
+| 17 | [PowerShell 4625](https://github.com/priyanka-sec/Windows-RDP-Brute-Force-Detection-Lab/blob/main/Screenshots/17-eventid-4625-failed-logon-powershell-query.jpg) | PS query — failed logins |
+| 18 | [PowerShell 4624](https://github.com/priyanka-sec/Windows-RDP-Brute-Force-Detection-Lab/blob/main/Screenshots/18-eventid-4624-successful-logon-powershell-query.jpg) | PS query — successful logins |
+| 19 | [Sysmon Install](https://github.com/priyanka-sec/Windows-RDP-Brute-Force-Detection-Lab/blob/main/Screenshots/19-sysmon-installation-powershell-success.jpg) | Sysmon deployment confirmed |
+| 20 | [Sysmon Logs](https://github.com/priyanka-sec/Windows-RDP-Brute-Force-Detection-Lab/blob/main/Screenshots/20-sysmon-operational-logs.jpg) | Sysmon operational log view |
+| 21 | [Sysmon EventID 1](https://github.com/priyanka-sec/Windows-RDP-Brute-Force-Detection-Lab/blob/main/Screenshots/21-sysmon-eventid1-process-creation.jpg) | Process creation event |
+| 22 | [Sysmon Process Details](https://github.com/priyanka-sec/Windows-RDP-Brute-Force-Detection-Lab/blob/main/Screenshots/22-sysmon-process-details-analysis.jpg) | Deep process analysis |
+| 23 | [Sysmon PS Hunt](https://github.com/priyanka-sec/Windows-RDP-Brute-Force-Detection-Lab/blob/main/Screenshots/23-sysmon-powershell-process-hunting.jpg) | Post-compromise process hunt |
+| 24 | [Splunk Sources Flowing](https://github.com/priyanka-sec/Windows-RDP-Brute-Force-Detection-Lab/blob/main/Screenshots/24-splunk-all-sourcetypes-flowing.png) | All 4 log sources in Splunk |
+| 25 | [Splunk CRITICAL Detection](https://github.com/priyanka-sec/Windows-RDP-Brute-Force-Detection-Lab/blob/main/Screenshots/25-splunk-bruteforce-detected.png) | 76 events — CRITICAL severity |
+| 26 | [Splunk Attack Timechart](https://github.com/priyanka-sec/Windows-RDP-Brute-Force-Detection-Lab/blob/main/Screenshots/26-splunk-timechart-attack-spike.png) | Attack spike — 880 events |
+| 27 | [Splunk TP Confirmed](https://github.com/priyanka-sec/Windows-RDP-Brute-Force-Detection-Lab/blob/main/Screenshots/27-splunk-success-after-failures.png) | Success after failure chain |
 
-| Screenshot | Description |
-|------------|-------------|
-| [01-lab-setup.png](Screenshots/01-lab-setup.png) | VirtualBox lab environment setup |
-| [02-kali-to-windows-connectivity.jpg](Screenshots/02-kali-to-windows-connectivity.jpg) | Connectivity verification from Kali Linux |
-| [03-windows-to-kali-connectivity.jpg](Screenshots/03-windows-to-kali-connectivity.jpg) | Connectivity verification from Windows Server |
-| [04-rdp-enabled-configuration.jpg](Screenshots/04-rdp-enabled-configuration.jpg) | RDP enabled on Windows Server 2022 |
-| [05-rdp-port-verification.jpg](Screenshots/05-rdp-port-verification.jpg) | Verification of RDP port 3389 |
-| [06-test-user-account-creation.jpg](Screenshots/06-test-user-account-creation.jpg) | Creation of SOC test user |
-| [07-test-user-account-created.jpg](Screenshots/07-test-user-account-created.jpg) | Verification of created user account |
-| [08-add-user-to-remote-desktop-users-group.jpg](Screenshots/08-add-user-to-remote-desktop-users-group.jpg) | Adding user to Remote Desktop Users group |
-| [09-rdp-user-group-assignment.jpg](Screenshots/09-rdp-user-group-assignment.jpg) | Verification of RDP group assignment |
-| [10-rdp-successful-authentication-command.png](Screenshots/10-rdp-successful-authentication-command.png) | Successful RDP authentication command |
-| [11-successful-rdp-login-from-kali-to-windows-server.jpg](Screenshots/11-successful-rdp-login-from-kali-to-windows-server.jpg) | Successful RDP session |
-| [12-rdp-failed-login-attempts-from-kali.png](Screenshots/12-rdp-failed-login-attempts-from-kali.png) | Failed RDP authentication attempts |
-| [13-eventid-4625-failed-rdp-logon-analysis.jpg](Screenshots/13-eventid-4625-failed-rdp-logon-analysis.jpg) | Event ID 4625 investigation |
-| [14-failed-rdp-authentication-event-4625.jpg](Screenshots/14-failed-rdp-authentication-event-4625.jpg) | Failed authentication log analysis |
-| [15-successful-rdp-authentication-event-4624-logon-type.jpg](Screenshots/15-successful-rdp-authentication-event-4624-logon-type.jpg) | Event ID 4624 analysis |
-| [16-security-log-authentication-analysis-overview.jpg](Screenshots/16-security-log-authentication-analysis-overview.jpg) | Windows Security Log investigation |
-| [17-eventid-4625-failed-logon-powershell-query.jpg](Screenshots/17-eventid-4625-failed-logon-powershell-query.jpg) | PowerShell query for failed logons |
-| [18-eventid-4624-successful-logon-powershell-query.jpg](Screenshots/18-eventid-4624-successful-logon-powershell-query.jpg) | PowerShell query for successful logons |
-
-
-<br>
-
-# 📌 Investigation Evidence Summary
-
-The screenshots above provide documented evidence of:
-
-- RDP environment configuration
-- Network connectivity validation
-- Authentication testing workflow
-- Successful and failed RDP login attempts
-- Windows Security Event Log investigation
-- Event ID 4624 and 4625 analysis
-- PowerShell-based authentication hunting
-- SOC investigation and detection workflow
-
-<br>
+<br><br>
 
 # 👩‍💻 About the Analyst
 
-## Priyanka Rane
+<div align="center">
 
-SOC Analyst L1 | Threat Detection & Incident Response
+**Priyanka Rane** — SOC Analyst L1
+
+BSc Information Technology — CGPA 9.70 | University of Mumbai
+
+🏅 Certified Ethical Hacker v13 AI (CEHv13) — EC-Council
+
+🏅 eLearnSecurity Network Penetration Tester (eNPT) — INE
 
 📧 ranepriyanka567@gmail.com
 
-🔗 LinkedIn: https://www.linkedin.com/in/priyanka-rane-606a71257/
+🔗 [LinkedIn](https://www.linkedin.com/in/priyanka-rane-606a71257/)
+
+🐙 [GitHub](https://github.com/priyanka-sec)
+
+</div>
 
 <br>
 
-⭐ If you found this project useful, feel free to star the repository.
+> ⭐ If this project helped you understand SOC detection workflows, feel free to star the repository.
