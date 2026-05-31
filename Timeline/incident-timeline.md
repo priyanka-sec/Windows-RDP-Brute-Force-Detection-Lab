@@ -85,9 +85,9 @@
 | 14 | [14-failed-rdp-authentication-event-4625.jpg](https://github.com/priyanka-sec/Windows-RDP-Brute-Force-Detection-Lab/blob/main/Screenshots/14-failed-rdp-authentication-event-4625.jpg) | EventID 4625 — 5/26/2026 9:09:06 PM |
 | 15 | [15-successful-rdp-authentication-event-4624-logon-type.jpg](https://github.com/priyanka-sec/Windows-RDP-Brute-Force-Detection-Lab/blob/main/Screenshots/15-successful-rdp-authentication-event-4624-logon-type.jpg) | EventID 4624 — Logon Type 10 — 5/26/2026 9:09:57 PM |
 | 16 | [16-security-log-authentication-analysis-overview.jpg](https://github.com/priyanka-sec/Windows-RDP-Brute-Force-Detection-Lab/blob/main/Screenshots/16-security-log-authentication-analysis-overview.jpg) | Full Security Log — May 26 2026 |
-| 25 | [25-splunk-bruteforce-detected.png](https://github.com/priyanka-sec/Windows-RDP-Brute-Force-Detection-Lab/blob/main/Screenshots/25-splunk-bruteforce-detected.png) | Splunk CRITICAL — 76 events |
+| 25 | [25-splunk-bruteforce-detected.jpg](https://github.com/priyanka-sec/Windows-RDP-Brute-Force-Detection-Lab/blob/main/Screenshots/25-splunk-bruteforce-detected.jpg) | Splunk CRITICAL — 76 events |
 | 26 | [26-splunk-timechart-attack-spike.png](https://github.com/priyanka-sec/Windows-RDP-Brute-Force-Detection-Lab/blob/main/Screenshots/26-splunk-timechart-attack-spike.png) | Attack volume — 880 events |
-| 27 | [27-splunk-success-after-failures.png](https://github.com/priyanka-sec/Windows-RDP-Brute-Force-Detection-Lab/blob/main/Screenshots/27-splunk-success-after-failures.png) | TP confirmation — success after failure |
+| 27 | [27-splunk-success-after-failures.jpg](https://github.com/priyanka-sec/Windows-RDP-Brute-Force-Detection-Lab/blob/main/Screenshots/27-splunk-success-after-failures.jpg) | TP confirmation — success after failure |
 
 <br><br>
 
