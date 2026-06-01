@@ -180,31 +180,39 @@ which is the industry-standard baseline for endpoint telemetry.
 
 ```ini
 [WinEventLog://Security]
-index = main
 disabled = false
+index = main
+renderXml = false
+checkpointInterval = 5
+start_from = oldest
+current_only = 0
 
 [WinEventLog://System]
-index = main
 disabled = false
+index = main
+renderXml = false
 
 [WinEventLog://Application]
-index = main
 disabled = false
+index = main
+renderXml = false
 
 [WinEventLog://Microsoft-Windows-Sysmon/Operational]
-index = main
-sourcetype = WinEventLog:Sysmon
 disabled = false
+index = main
+renderXml = false
 ```
 
 ### outputs.conf
 
 ```ini
 [tcpout]
-defaultGroup = splunk-indexer
+defaultGroup = default-autolb-group
 
-[tcpout:splunk-indexer]
+[tcpout:default-autolb-group]
 server = 192.168.56.1:9997
+
+[tcpout-server://192.168.56.1:9997]
 ```
 
 <br><br>
