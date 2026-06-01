@@ -72,7 +72,7 @@ to identify any malicious process execution by attacker.
 
 This alert was classified as **TRUE POSITIVE** based on:
 
-1. Source IP 192.168.56.10 generated 142 EventCode 4625 events
+1. Source IP 192.168.56.10 generated 808 EventCode 4625 events
 2. All attempts targeted the same account — `socuser`
 3. Successful EventCode 4624 login confirmed from same source IP
 4. Logon Type 10 confirmed RDP session — not local login
@@ -86,4 +86,4 @@ This alert was classified as **TRUE POSITIVE** based on:
 |---|---|
 | Admin testing RDP | No change request or maintenance window active |
 | Vulnerability scanner | Scanner IPs are whitelisted — 192.168.56.10 is not |
-| User forgot password | 142 attempts in 2 minutes — impossible for human user |
+| User forgot password | 808 attempts in 2 minutes — impossible for human user |
