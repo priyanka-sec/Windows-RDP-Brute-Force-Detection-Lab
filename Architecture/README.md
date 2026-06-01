@@ -45,24 +45,24 @@ The environment was built to demonstrate:
 ## 🖼️ Architecture Diagram
 
 ```
-┌─────────────────────────────────────────────────────────────┐
-│                  VirtualBox Lab Environment                  │
-│                                                             │
-│  ┌──────────────────┐        ┌──────────────────────────┐  │
-│  │   Kali Linux     │──RDP──▶│   Windows Server 2022    │  │
-│  │  192.168.56.10   │ :3389  │    192.168.56.110        │  │
-│  │   ATTACKER       │        │  Sysmon + Splunk UF      │  │
-│  └──────────────────┘        └────────────┬─────────────┘  │
-│                                           │ Logs            │
-│                                           │ Port 9997       │
-│                                           ▼                 │
-│                              ┌──────────────────────────┐  │
-│                              │    Splunk Enterprise      │  │
-│                              │      192.168.56.1         │  │
-│                              │    localhost:8000         │  │
-│                              │    SOC ANALYST VIEW       │  │
-│                              └──────────────────────────┘  │
-└─────────────────────────────────────────────────────────────┘
+┌───────────────────────────────────────────────────────────────┐
+│                  VirtualBox Lab Environment                   │
+│                                                               │
+│  ┌──────────────────┐        ┌──────────────────────────┐     │
+│  │   Kali Linux     │──RDP──▶│   Windows Server 2022    │     │
+│  │  192.168.56.10   │ :3389  │    192.168.56.110        │     │
+│  │   ATTACKER       │        │  Sysmon + Splunk UF      │     │
+│  └──────────────────┘        └────────────┬─────────────┘     │
+│                                           │ Logs              │
+│                                           │ Port 9997         │
+│                                           ▼                   │
+│                              ┌──────────────────────────┐     │
+│                              │    Splunk Enterprise      │    │
+│                              │      192.168.56.1         │    │
+│                              │    localhost:8000         │    │
+│                              │    SOC ANALYST VIEW       │    │
+│                              └──────────────────────────┘     │
+└───────────────────────────────────────────────────────────────┘
 ```
 
 <br><br>
@@ -77,12 +77,12 @@ Kali Linux                Windows Server 2022           Splunk Enterprise
     │                            │── EventCode 4624 ─────────▶│
     │                            │── Sysmon EventCode 1 ─────▶│
     │                            │── Sysmon EventCode 3 ─────▶│
-    │                            │                            │
-    │                            │         SOC Analyst        │
-    │                            │         runs SPL queries   │
-    │                            │         detects CRITICAL   │
-    │                            │         confirms TP        │
-    │                            │         initiates contain  │
+    │                            │                             │
+    │                            │         SOC Analyst         │
+    │                            │         runs SPL queries    │
+    │                            │         detects CRITICAL    │
+    │                            │         confirms TP         │
+    │                            │         initiates contain   │
 ```
 
 <br><br>
