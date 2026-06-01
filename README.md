@@ -386,8 +386,8 @@ Full hardening guide:
    VPN-only access is the minimum acceptable standard.
 
 3. **Splunk detected what manual review would have missed.**
-   The count-based threshold query identified 76 CRITICAL
-   events instantly across a 15-minute window.
+   The count-based threshold query identified abnormal authentication
+   activity rapidly, allowing investigation to begin faster than manual log review.
 
 4. **Sysmon provided critical post-compromise clarity.**
    Without Sysmon EventCode 1, confirming no malicious
