@@ -1,307 +1,411 @@
-# RDP Hardening Recommendations
+# 🛡️ RDP Hardening Recommendations
+
 ## INC-RDP-2026-001 — Post-Incident Security Hardening
 
-**Analyst:** Priyanka Rane — SOC Analyst L1
-**Date:** 26 May 2026
-**Incident Reference:** INC-RDP-2026-001
+**👩‍💻 Analyst:** Priyanka Rane — SOC Analyst L1
+**📅 Date:** 26 May 2026
+**🎫 Incident Reference:** INC-RDP-2026-001
 
 ---
 
-## Overview
+# 📌 Overview
 
-Following the confirmed RDP brute force attack against Windows
-Server 2022, the following hardening recommendations have been
-produced to prevent recurrence and reduce the overall RDP
-attack surface.
+Following the confirmed RDP brute force attack against Windows Server 2022, the following security hardening recommendations were produced to reduce attack surface, improve authentication security, strengthen monitoring, and prevent similar attacks.
 
-These recommendations are prioritized by impact and ease
-of implementation.
+Recommendations are prioritized by security impact and implementation effort.
 
 ---
 
-## Priority 1 — CRITICAL (Implement Immediately)
+# 🚨 Priority 1 — CRITICAL (Implement Immediately)
 
-### 1.1 Enable Account Lockout Policy
+## 🔐 1.1 Enable Account Lockout Policy
 
-**Why:** The absence of an account lockout policy allowed
-142 failed login attempts without any automatic blocking.
-One policy change stops this entire attack class.
+### Why
 
-**How to implement:**
+The absence of an account lockout policy allowed hundreds of failed authentication attempts without automatic blocking mechanisms.
+
+Implementing lockout policies significantly reduces brute force effectiveness.
+
+### How to Implement
 
 ```powershell
-# Open Group Policy Editor
 gpedit.msc
 
-# Navigate to:
-# Computer Configuration → Windows Settings → Security Settings
-# → Account Policies → Account Lockout Policy
+# Navigate:
 
-# Set these values:
-# Account lockout threshold: 5 invalid logon attempts
-# Account lockout duration: 30 minutes
-# Reset account lockout counter after: 15 minutes
+# Computer Configuration
+# → Windows Settings
+# → Security Settings
+# → Account Policies
+# → Account Lockout Policy
+
+# Configure:
+
+# Account lockout threshold = 5
+# Account lockout duration = 30 minutes
+# Reset counter after = 15 minutes
 ```
 
-Or via PowerShell:
+Or:
+
 ```powershell
 net accounts /lockoutthreshold:5
+
 net accounts /lockoutduration:30
+
 net accounts /lockoutwindow:15
 ```
 
-**Expected Outcome:** After 5 failed attempts the account
-locks for 30 minutes — making brute force attacks
-computationally impractical.
+### Expected Outcome
+
+✅ Accounts automatically lock after repeated failures
+
+✅ Brute force attacks become significantly more difficult
 
 ---
 
-### 1.2 Restrict RDP Behind VPN Only
+## 🔒 1.2 Restrict RDP Behind VPN Only
 
-**Why:** RDP exposed directly on any network interface
-is one of the highest-risk configurations in Windows
-environments. Attackers actively scan for open port 3389.
+### Why
 
-**How to implement:**
+RDP exposed directly to networks significantly increases attack surface.
+
+Restricting access behind VPN reduces exposure.
+
+### How to Implement
 
 ```powershell
-# Block RDP from all sources except VPN subnet
-New-NetFirewallRule -DisplayName "Block-RDP-External" `
-  -Direction Inbound `
-  -Protocol TCP `
-  -LocalPort 3389 `
-  -Action Block
+New-NetFirewallRule `
+-DisplayName "Block-RDP-External" `
+-Direction Inbound `
+-Protocol TCP `
+-LocalPort 3389 `
+-Action Block
 
-New-NetFirewallRule -DisplayName "Allow-RDP-VPN-Only" `
-  -Direction Inbound `
-  -Protocol TCP `
-  -LocalPort 3389 `
-  -RemoteAddress "10.0.0.0/8" `
-  -Action Allow
+
+New-NetFirewallRule `
+-DisplayName "Allow-RDP-VPN-Only" `
+-Direction Inbound `
+-Protocol TCP `
+-LocalPort 3389 `
+-RemoteAddress "10.0.0.0/8" `
+-Action Allow
 ```
 
-**Expected Outcome:** RDP is only reachable through the
-VPN tunnel — attackers cannot reach port 3389 at all
-without first authenticating to the VPN.
+### Expected Outcome
+
+✅ Attackers cannot directly reach RDP
+
+✅ Authentication occurs only after VPN access
 
 ---
 
-### 1.3 Enable Multi-Factor Authentication on RDP
+## 🔑 1.3 Enable Multi-Factor Authentication (MFA)
 
-**Why:** Even if an attacker obtains valid credentials,
-MFA prevents login without the second factor.
+### Why
 
-**How to implement:**
-- Deploy Microsoft Authenticator via Azure AD Conditional Access
-- Or deploy Duo Security MFA for Windows RDP
-- Or use Windows Hello for Business with PIN + biometric
+Passwords alone are insufficient protection.
 
-**Expected Outcome:** Stolen or brute-forced credentials
-become useless without the second factor.
+MFA protects even if credentials are stolen or guessed.
+
+### Implementation Options
+
+* Microsoft Authenticator
+* Duo MFA for Windows RDP
+* Windows Hello for Business
+
+### Expected Outcome
+
+✅ Compromised passwords alone cannot provide access
 
 ---
 
-## Priority 2 — HIGH (Implement Within 48 Hours)
+# ⚠️ Priority 2 — HIGH (Implement Within 48 Hours)
 
-### 2.1 Replace NTLM with Kerberos Authentication
+## 🏢 2.1 Reduce or Eliminate NTLM Usage
 
-**Why:** NTLM authentication observed in this attack
-(EventCode 4776) is vulnerable to:
-- Pass-the-Hash attacks
-- NTLM relay attacks
-- Credential capture via Responder
+### Why
 
-**How to implement:**
+NTLM observed during investigation increases risk of:
+
+* Pass-the-Hash attacks
+* NTLM relay attacks
+* Credential theft
+
+### How to Implement
 
 ```powershell
-# Disable NTLM authentication via Group Policy
-# Computer Configuration → Windows Settings → Security Settings
-# → Local Policies → Security Options
-
-# Set: Network security: Restrict NTLM:
-# Incoming NTLM traffic → Deny all accounts
-# Outgoing NTLM traffic to remote servers → Deny all
-
-# Or via registry:
-Set-ItemProperty -Path `
-"HKLM:\SYSTEM\CurrentControlSet\Control\Lso\MSV1_0" `
--Name "RestrictSendingNTLMTraffic" -Value 2
+Set-ItemProperty `
+-Path "HKLM:\SYSTEM\CurrentControlSet\Control\Lsa\MSV1_0" `
+-Name "RestrictSendingNTLMTraffic" `
+-Value 2
 ```
 
-**Expected Outcome:** All authentication uses Kerberos —
-eliminates NTLM-based attack vectors entirely.
+Group Policy:
+
+```text
+Computer Configuration
+
+→ Windows Settings
+
+→ Security Settings
+
+→ Local Policies
+
+→ Security Options
+```
+
+Configure:
+
+```text
+Network Security:
+
+Restrict NTLM
+
+Incoming Traffic
+
+Outgoing Traffic
+```
+
+### Expected Outcome
+
+✅ Reduced exposure to legacy authentication attacks
 
 ---
 
-### 2.2 Enforce Strong Password Policy
+## 🔑 2.2 Enforce Strong Password Policy
 
-**Why:** The socuser account password was cracked within
-8 minutes using a common wordlist. Stronger passwords
-increase brute force time from minutes to years.
+### Why
 
-**How to implement:**
+Weak passwords increase brute force success probability.
+
+### How to Implement
 
 ```powershell
-# Set minimum password length to 14 characters
 net accounts /minpwlen:14
-
-# Enable password complexity requirements via Group Policy
-# Computer Configuration → Windows Settings → Security Settings
-# → Account Policies → Password Policy
-# Password must meet complexity requirements: Enabled
-# Minimum password length: 14
-# Maximum password age: 90 days
-# Password history: 10 passwords
 ```
 
-**Expected Outcome:** 14-character complex passwords
-make dictionary and brute force attacks computationally
-infeasible with standard hardware.
+Configure:
+
+```text
+Password Complexity = Enabled
+
+Minimum Length = 14
+
+Password History = 10
+
+Maximum Age = 90 Days
+```
+
+### Expected Outcome
+
+✅ Stronger resistance against password guessing attacks
 
 ---
 
-### 2.3 Change Default RDP Port
+## 🛡️ 2.3 Restrict RDP Using Firewall Allowlisting
 
-**Why:** Attackers scan specifically for port 3389.
-Changing the port eliminates automated scanner hits.
+### Why
 
-**Note:** This is security through obscurity and should
-never replace proper controls — use in addition to them.
+Reducing attack surface is more effective than changing ports.
+
+### How to Implement
 
 ```powershell
-# Change RDP port from 3389 to custom port (e.g. 54321)
-Set-ItemProperty -Path `
-"HKLM:\System\CurrentControlSet\Control\Terminal Server\WinStations\RDP-Tcp" `
--Name "PortNumber" -Value 54321
-
-# Update firewall rule for new port
-New-NetFirewallRule -DisplayName "Allow-RDP-Custom-Port" `
-  -Direction Inbound `
-  -Protocol TCP `
-  -LocalPort 54321 `
-  -Action Allow
+New-NetFirewallRule `
+-DisplayName "Allow-RDP-Admin-Subnet" `
+-Direction Inbound `
+-Protocol TCP `
+-LocalPort 3389 `
+-RemoteAddress "192.168.56.0/24" `
+-Action Allow
 ```
+
+### Expected Outcome
+
+✅ Only approved networks can reach RDP
 
 ---
 
-## Priority 3 — MEDIUM (Implement Within 1 Week)
+# 🟡 Priority 3 — MEDIUM (Implement Within One Week)
 
-### 3.1 Deploy SIEM Alerting for EventCode 4625
+## 📊 3.1 Deploy Splunk Real-Time Alerting
 
-**Why:** This attack was detected reactively. Real-time
-alerting would have fired within the first minute.
+### Why
 
-**Splunk Alert Rule:**
+Reactive detection increases attacker dwell time.
+
+### Splunk Query
 
 ```splunk
 index=main EventCode=4625
+
 | bucket _time span=5m
-| stats count by _time, host
-| where count > 5
-| eval severity=if(count>50,"CRITICAL",if(count>20,"HIGH","MEDIUM"))
+
+| stats count as failed_attempts by _time host
+
+| where failed_attempts > 20
+
+| eval severity=case(
+
+failed_attempts>50,"CRITICAL",
+
+failed_attempts>20,"HIGH",
+
+true(),"MEDIUM")
 ```
 
-Set this as a **Scheduled Alert** in Splunk:
-- Run every 5 minutes
-- Trigger if results > 0
-- Send email or webhook notification to SOC team
+### Configure Alert
 
-**Expected Outcome:** SOC analyst is notified within
-5 minutes of attack start — not after the fact.
+* Schedule every 5 minutes
+* Trigger when results >0
+* Send email/webhook
+
+### Expected Outcome
+
+✅ SOC receives faster notification
 
 ---
 
-### 3.2 Enable Network Level Authentication (NLA)
+## 🖥️ 3.2 Enable Network Level Authentication (NLA)
 
-**Why:** NLA requires users to authenticate before
-establishing a full RDP session — reducing server load
-and adding a pre-session authentication layer.
+### Why
+
+Authentication occurs before establishing full session.
+
+### Implementation
 
 ```powershell
-# Enable NLA via PowerShell
-Set-ItemProperty -Path `
-"HKLM:\System\CurrentControlSet\Control\Terminal Server\WinStations\RDP-Tcp" `
--Name "UserAuthentication" -Value 1
+Set-ItemProperty `
+-Path "HKLM:\System\CurrentControlSet\Control\Terminal Server\WinStations\RDP-Tcp" `
+-Name "UserAuthentication" `
+-Value 1
 ```
+
+### Expected Outcome
+
+✅ Reduced attack surface
 
 ---
 
-### 3.3 Restrict RDP Access to Specific Admin Accounts Only
+## 👤 3.3 Restrict RDP to Admin Accounts Only
 
-**Why:** General user accounts like `socuser` should
-never have RDP access in production environments.
-RDP should be limited to named administrator accounts only.
+### Why
+
+General user accounts should not possess RDP permissions.
+
+### Implementation
 
 ```powershell
-# Remove socuser from Remote Desktop Users group
-Remove-LocalGroupMember -Group "Remote Desktop Users" `
-  -Member "socuser"
+Remove-LocalGroupMember `
+-Group "Remote Desktop Users" `
+-Member "socuser"
 
-# Add only specific admin accounts
-Add-LocalGroupMember -Group "Remote Desktop Users" `
-  -Member "rdp-admin-01"
+
+Add-LocalGroupMember `
+-Group "Remote Desktop Users" `
+-Member "rdp-admin-01"
 ```
+
+### Expected Outcome
+
+✅ Smaller attack surface
 
 ---
 
-## Priority 4 — LOW (Implement Within 1 Month)
+## 📁 3.4 Enable Security Log Retention
 
-### 4.1 Disable RDP on Non-Essential Servers
+### Why
+
+Log overwriting reduces investigation capability.
+
+### Implementation
+
+Increase:
+
+* Security Event Log Size
+* Retention Policies
+* Log Backup Frequency
+
+### Expected Outcome
+
+✅ Longer forensic visibility
+
+---
+
+# 🟢 Priority 4 — LOW (Implement Within One Month)
+
+## 🚫 4.1 Disable RDP on Non-Essential Systems
 
 ```powershell
-# Disable RDP completely on servers that don't need it
-Set-ItemProperty -Path `
-"HKLM:\System\CurrentControlSet\Control\Terminal Server" `
--Name "fDenyTSConnections" -Value 1
+Set-ItemProperty `
+-Path "HKLM:\System\CurrentControlSet\Control\Terminal Server" `
+-Name "fDenyTSConnections" `
+-Value 1
 ```
 
-### 4.2 Enable RDP Session Timeout Policies
+---
 
-```powershell
-# Disconnect idle sessions after 15 minutes
-# End disconnected sessions after 30 minutes
-# Via Group Policy:
-# Computer Configuration → Administrative Templates
-# → Windows Components → Remote Desktop Services
-# → Remote Desktop Session Host → Session Time Limits
+## ⏱️ 4.2 Configure Session Timeouts
+
+Configure:
+
+```text
+Disconnect Idle Sessions
+
+Terminate Disconnected Sessions
+
+Remote Desktop Session Limits
 ```
 
-### 4.3 Deploy Windows Defender Credential Guard
+### Expected Outcome
 
-Prevents credential theft even if attacker gains access.
-Isolates LSASS credentials from direct memory access —
-blocks Mimikatz-style attacks post-compromise.
+✅ Reduced exposure from abandoned sessions
 
 ---
 
-## Hardening Checklist Summary
+## 🛡️ 4.3 Deploy Credential Guard
 
-| Control | Priority | Status |
-|---|---|---|
-| Account lockout policy (5 attempts) | CRITICAL | ⬜ Pending |
-| RDP behind VPN only | CRITICAL | ⬜ Pending |
-| MFA on all RDP accounts | CRITICAL | ⬜ Pending |
-| Replace NTLM with Kerberos | HIGH | ⬜ Pending |
-| 14-character password minimum | HIGH | ⬜ Pending |
-| Change default RDP port | HIGH | ⬜ Pending |
-| Splunk real-time alert for 4625 | MEDIUM | ⬜ Pending |
-| Enable NLA | MEDIUM | ⬜ Pending |
-| Restrict RDP to admin accounts | MEDIUM | ⬜ Pending |
-| Disable RDP on non-essential servers | LOW | ⬜ Pending |
-| Session timeout policies | LOW | ⬜ Pending |
-| Deploy Credential Guard | LOW | ⬜ Pending |
+### Why
+
+Credential Guard isolates secrets from attackers.
+
+### Expected Outcome
+
+✅ Reduced credential dumping risk
 
 ---
 
-## References
+# ✅ Hardening Checklist Summary
 
-- [MITRE ATT&CK T1110.001 — Brute Force](https://attack.mitre.org/techniques/T1110/001/)
-- [MITRE ATT&CK T1021.001 — Remote Desktop Protocol](https://attack.mitre.org/techniques/T1021/001/)
-- [Microsoft RDP Security Best Practices](https://docs.microsoft.com/en-us/windows-server/remote/remote-desktop-services/rds-plan-secure-data-storage)
-- [CIS Benchmark — Windows Server 2022](https://www.cisecurity.org/benchmark/microsoft_windows_server)
-- [NIST SP 800-46 — Remote Access Guide](https://csrc.nist.gov/publications/detail/sp/800-46/rev-2/final)
+| Control                   | Priority | Status    |
+| ------------------------- | -------- | --------- |
+| Account Lockout Policy    | CRITICAL | ⬜ Pending |
+| Restrict RDP Behind VPN   | CRITICAL | ⬜ Pending |
+| MFA on RDP Accounts       | CRITICAL | ⬜ Pending |
+| Reduce NTLM Usage         | HIGH     | ⬜ Pending |
+| Strong Password Policy    | HIGH     | ⬜ Pending |
+| Firewall Allowlisting     | HIGH     | ⬜ Pending |
+| Splunk Real-Time Alerting | MEDIUM   | ⬜ Pending |
+| Enable NLA                | MEDIUM   | ⬜ Pending |
+| Restrict RDP Accounts     | MEDIUM   | ⬜ Pending |
+| Security Log Retention    | MEDIUM   | ⬜ Pending |
+| Disable Unnecessary RDP   | LOW      | ⬜ Pending |
+| Session Timeout Policies  | LOW      | ⬜ Pending |
+| Credential Guard          | LOW      | ⬜ Pending |
 
 ---
 
-**Analyst:** Priyanka Rane | SOC Analyst L1
-**Date:** 26 May 2026
+# 📚 References
+
+* MITRE ATT&CK T1110.001 — Brute Force
+* MITRE ATT&CK T1021.001 — Remote Desktop Protocol
+* Microsoft RDP Security Guidance
+* CIS Benchmark Windows Server
+* NIST SP 800-46 Remote Access Guide
+
+---
+
+**👩‍💻 Analyst:** Priyanka Rane | SOC Analyst L1
+
+**📅 Date:** 26 May 2026
