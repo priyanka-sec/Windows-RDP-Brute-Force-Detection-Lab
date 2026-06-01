@@ -39,7 +39,7 @@ screenshot in this folder.
 |---|---|---|
 | 10 | [10-rdp-successful-authentication-command.jpg](https://github.com/priyanka-sec/Windows-RDP-Brute-Force-Detection-Lab/blob/main/Screenshots/10-rdp-successful-authentication-command.jpg) | xfreerdp successful auth command |
 | 11 | [11-successful-rdp-login-from-kali-to-windows-server.jpg](https://github.com/priyanka-sec/Windows-RDP-Brute-Force-Detection-Lab/blob/main/Screenshots/11-successful-rdp-login-from-kali-to-windows-server.jpg) | Full RDP session from Kali to Windows |
-| 12 | [12-rdp-failed-login-attempts-from-kali.png](https://github.com/priyanka-sec/Windows-RDP-Brute-Force-Detection-Lab/blob/main/Screenshots/12-rdp-failed-login-attempts-from-kali.png) | xfreerdp failed authentication attempts |
+| 12 | [12-rdp-failed-login-attempts-from-kali.jpg](https://github.com/priyanka-sec/Windows-RDP-Brute-Force-Detection-Lab/blob/main/Screenshots/12-rdp-failed-login-attempts-from-kali.jpg) | xfreerdp failed authentication attempts |
 
 <br><br>
 
