@@ -73,7 +73,7 @@ The timeline was reconstructed using evidence from four sources:
 | File | Location |
 |---|---|
 | Full Incident Report | [Reports/soc-investigation-report.md](../Reports/soc-investigation-report.md) |
-| Detection Rules | [Detection-Logic/Splunk-Detection-Rules.md](../Detection-Logic/splunk-detection-rules.md) |
+| Detection Rules | [Detection-Logic/splunk-detection-rules.md](../Detection-Logic/splunk-detection-rules.md) |
 | Sigma Rule | [Detection-Logic/sigma-rdp-bruteforce.yml](../Detection-Logic/sigma-rdp-bruteforce.yml) |
 | Hardening Guide | [Mitigation-Recommendations/rdp-hardening-recommendations.md](../Mitigation-Recommendations/rdp-hardening-recommendations.md) |
 | All Screenshots | [Screenshots/](../Screenshots/) |
