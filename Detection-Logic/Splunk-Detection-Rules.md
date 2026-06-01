@@ -208,4 +208,5 @@ These rules were used to investigate and confirm a successful Windows RDP brute 
 
 <br><br>
 
-
+**Analyst:** Priyanka Rane | SOC Analyst L1
+**Date:** 26 May 2026
