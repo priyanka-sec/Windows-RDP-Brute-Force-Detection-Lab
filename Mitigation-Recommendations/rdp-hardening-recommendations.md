@@ -6,7 +6,7 @@
 **📅 Date:** 26 May 2026
 **🎫 Incident Reference:** INC-RDP-2026-001
 
----
+<br><br>
 
 # 📌 Overview
 
@@ -14,7 +14,7 @@ Following the confirmed RDP brute force attack against Windows Server 2022, the 
 
 Recommendations are prioritized by security impact and implementation effort.
 
----
+<br><br>
 
 # 🚨 Priority 1 — CRITICAL (Implement Immediately)
 
@@ -62,7 +62,7 @@ net accounts /lockoutwindow:15
 
 ✅ Brute force attacks become significantly more difficult
 
----
+<br><br>
 
 ## 🔒 1.2 Restrict RDP Behind VPN Only
 
@@ -98,7 +98,7 @@ New-NetFirewallRule `
 
 ✅ Authentication occurs only after VPN access
 
----
+<br><br>
 
 ## 🔑 1.3 Enable Multi-Factor Authentication (MFA)
 
@@ -118,7 +118,7 @@ MFA protects even if credentials are stolen or guessed.
 
 ✅ Compromised passwords alone cannot provide access
 
----
+<br><br>
 
 # ⚠️ Priority 2 — HIGH (Implement Within 48 Hours)
 
@@ -171,7 +171,7 @@ Outgoing Traffic
 
 ✅ Reduced exposure to legacy authentication attacks
 
----
+<br><br>
 
 ## 🔑 2.2 Enforce Strong Password Policy
 
@@ -201,7 +201,7 @@ Maximum Age = 90 Days
 
 ✅ Stronger resistance against password guessing attacks
 
----
+<br><br>
 
 ## 🛡️ 2.3 Restrict RDP Using Firewall Allowlisting
 
@@ -225,7 +225,7 @@ New-NetFirewallRule `
 
 ✅ Only approved networks can reach RDP
 
----
+<br><br>
 
 # 🟡 Priority 3 — MEDIUM (Implement Within One Week)
 
@@ -265,7 +265,7 @@ true(),"MEDIUM")
 
 ✅ SOC receives faster notification
 
----
+<br><br>
 
 ## 🖥️ 3.2 Enable Network Level Authentication (NLA)
 
@@ -286,7 +286,7 @@ Set-ItemProperty `
 
 ✅ Reduced attack surface
 
----
+<br><br>
 
 ## 👤 3.3 Restrict RDP to Admin Accounts Only
 
@@ -311,7 +311,7 @@ Add-LocalGroupMember `
 
 ✅ Smaller attack surface
 
----
+<br><br>
 
 ## 📁 3.4 Enable Security Log Retention
 
@@ -331,7 +331,7 @@ Increase:
 
 ✅ Longer forensic visibility
 
----
+<br><br>
 
 # 🟢 Priority 4 — LOW (Implement Within One Month)
 
@@ -344,7 +344,7 @@ Set-ItemProperty `
 -Value 1
 ```
 
----
+<br><br>
 
 ## ⏱️ 4.2 Configure Session Timeouts
 
@@ -362,7 +362,7 @@ Remote Desktop Session Limits
 
 ✅ Reduced exposure from abandoned sessions
 
----
+<br><br>
 
 ## 🛡️ 4.3 Deploy Credential Guard
 
@@ -374,7 +374,7 @@ Credential Guard isolates secrets from attackers.
 
 ✅ Reduced credential dumping risk
 
----
+<br><br>
 
 # ✅ Hardening Checklist Summary
 
@@ -394,7 +394,7 @@ Credential Guard isolates secrets from attackers.
 | Session Timeout Policies  | LOW      | ⬜ Pending |
 | Credential Guard          | LOW      | ⬜ Pending |
 
----
+<br><br>
 
 # 📚 References
 
@@ -404,7 +404,7 @@ Credential Guard isolates secrets from attackers.
 * CIS Benchmark Windows Server
 * NIST SP 800-46 Remote Access Guide
 
----
+<br><br>
 
 **👩‍💻 Analyst:** Priyanka Rane | SOC Analyst L1
 
