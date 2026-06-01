@@ -80,7 +80,7 @@ screenshot in this folder.
 | # | File | Timestamp | Description |
 |---|---|---|---|
 | 24 | [24-splunk-all-sourcetypes-flowing.jpg](https://github.com/priyanka-sec/Windows-RDP-Brute-Force-Detection-Lab/blob/main/Screenshots/24-splunk-all-sourcetypes-flowing.jpg) | 26/05/2026 | All 4 log sources flowing into Splunk |
-| 25 | [25-splunk-bruteforce-detected.png](https://github.com/priyanka-sec/Windows-RDP-Brute-Force-Detection-Lab/blob/main/Screenshots/25-splunk-bruteforce-detected.png) | 26/05/2026 20:24 | 76 events — CRITICAL severity confirmed |
+| 25 | [25-splunk-bruteforce-detected.jpg](https://github.com/priyanka-sec/Windows-RDP-Brute-Force-Detection-Lab/blob/main/Screenshots/25-splunk-bruteforce-detected.jpg) | 26/05/2026 20:24 | 76 events — CRITICAL severity confirmed |
 | 26 | [26-splunk-timechart-attack-spike.png](https://github.com/priyanka-sec/Windows-RDP-Brute-Force-Detection-Lab/blob/main/Screenshots/26-splunk-timechart-attack-spike.png) | 26/05/2026 12:08 | Attack spike — 538 events — 880 total |
 | 27 | [27-splunk-success-after-failures.png](https://github.com/priyanka-sec/Windows-RDP-Brute-Force-Detection-Lab/blob/main/Screenshots/27-splunk-success-after-failures.png) | 26/05/2026 12:08 | True Positive — success after failure chain |
 
