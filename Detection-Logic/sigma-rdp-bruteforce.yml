@@ -2,9 +2,9 @@ title: Windows RDP Brute Force Detection
 
 id: 9f8c7a21-6c4e-4d0e-a123-rdpbf2026
 
-status: experimental
+status: test
 
-description: Detects multiple failed Remote Desktop Protocol (RDP) authentication attempts that may indicate brute-force activity against Windows systems.
+description: Detects multiple failed Remote Desktop Protocol (RDP) authentication attempts that may indicate brute force activity against Windows systems.
 
 author: Priyanka Rane
 
@@ -19,22 +19,35 @@ logsource:
   service: security
 
 detection:
+
   selection:
     EventID: 4625
     LogonType: 10
 
-  condition: selection
+  timeframe: 5m
+
+  condition: selection | count() by Computer > 20
 
 falsepositives:
-  - User entering incorrect passwords
+  - Users entering incorrect passwords repeatedly
   - Expired credentials
   - Misconfigured automated scripts
+  - Administrative testing activities
 
 level: high
 
 tags:
+  - attack.initial_access
   - attack.credential_access
-  - attack.t1110
   - attack.lateral_movement
+  - attack.t1110
+  - attack.t1110.001
   - attack.t1021.001
   - attack.rdp
+
+fields:
+  - Computer
+  - TargetUserName
+  - IpAddress
+  - LogonType
+  - EventID
