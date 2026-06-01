@@ -12,7 +12,7 @@ RDP Brute Force Simulation · Windows Event Log Analysis · Splunk SIEM Detectio
   <img src="https://img.shields.io/badge/Telemetry-Sysmon-orange?style=flat-square"/>
   <img src="https://img.shields.io/badge/Log%20Forwarding-Splunk%20UF-green?style=flat-square"/>
   <img src="https://img.shields.io/badge/MITRE%20ATT%26CK-T1110.001%20%7C%20T1021.001%20%7C%20T1078.003-red?style=flat-square"/>
-  <img src="https://img.shields.io/badge/Status-Completed-brightgreen?style=flat-square"/>
+  <img src="https://img.shields.io/badge/Status-SOC%20Investigation%20Complete-brightgreen?style=flat-square"/>
 </p>
 
 <br><br>
@@ -112,7 +112,7 @@ This project simulates a real-world RDP brute force attack against a Windows Ser
 | Tool | Purpose |
 |---|---|
 | Kali Linux | Attack simulation — xfreerdp brute force |
-| Windows Server 2022 | Target — RDP enabled, AD environment |
+| Windows Server 2022 | Target — RDP enabled server environment |
 | Splunk Enterprise | SIEM — log ingestion, SPL queries, alerting |
 | Splunk Universal Forwarder | Ships Windows logs → Splunk in real time |
 | Sysmon | Deep endpoint visibility — process, network, file |
@@ -175,12 +175,12 @@ and confirmed the attack.
 
 ```splunk
 index=main EventCode=4625
-| stats count by host
-| eval severity=if(count>50,"CRITICAL",if(count>20,"HIGH","MEDIUM"))
-| sort -count
+| stats count as failed_attempts by host
+| eval severity=if(failed_attempts>50,"CRITICAL",if(failed_attempts>20,"HIGH","MEDIUM"))
+| sort - failed_attempts
 ```
 
-**Result:** WIN-TLKR5B0U5QP — count=76 — **CRITICAL**
+**Result:** WIN-TLKR5B0U5QP — failed_attempts=808 — **CRITICAL**
 
 ## Query 2 — Attack Success Confirmation
 
@@ -201,8 +201,7 @@ index=main EventCode=4625
 | timechart span=1m count
 ```
 
-**Result:** Spike of 538 events at 12:08 — clear brute
-force pattern visible.
+**Result:** Large authentication spike observed during brute force activity
 
 ## Query 4 — Post-Compromise Process Hunt
 
@@ -247,7 +246,7 @@ did not execute any commands during the active session window.
 
 | Event ID | Source | Description | Count |
 |---|---|---|---|
-| 4625 | Security | Failed login attempt | 880 total |
+| 4625 | Security | Failed login attempt | 808 observed |
 | 4624 | Security | Successful login — Logon Type 10 | 1 confirmed |
 | 4776 | Security | NTLM authentication attempt | Observed |
 | 4672 | Security | Special privileges assigned | Post-login |
@@ -281,7 +280,7 @@ See full detection files in the [Detection-Logic](./Detection-Logic/) folder.
 
 - **Trigger:** Single host with >5 failed logins (EventCode 4625)
 - **Severity:** >50 = CRITICAL — >20 = HIGH — >5 = MEDIUM
-- **Result:** 76 events — CRITICAL severity confirmed
+- Result: High volume failed authentication activity detected and classified as CRITICAL severity
 - **Escalation:** CRITICAL alert → immediate L2 escalation
 
 ## Sigma Rule
@@ -298,7 +297,7 @@ Production-ready Sigma rule available at:
 | Source IP | 192.168.56.10 | **MALICIOUS** — confirmed attacker | Windows Security Log + Splunk | Blocked at Windows Firewall |
 | Target Account | socuser | **COMPROMISED** — successful login confirmed | EventCode 4624 — 9:09:57 PM — Logon Type 10 | Account disabled + password reset |
 | Auth Protocol | NTLM | **WEAK** — relay attack risk | EventCode 4776 — NtLmSsp confirmed | Kerberos enforcement recommended |
-| Failed Logins | 880 total — 76 in 15 min | **BRUTE FORCE CONFIRMED** | Splunk count query — CRITICAL | Account lockout enforced |
+| Failed Logins | 808 failed authentication events observed | **BRUTE FORCE CONFIRMED** | Splunk authentication correlation | Account lockout recommended |
 | Successful Login | EventCode 4624 — 9:09:57 PM | **TRUE POSITIVE — BREACH** | Logon Type 10 — RDP session | Immediate containment initiated |
 
 <br><br>
@@ -307,7 +306,7 @@ Production-ready Sigma rule available at:
 
 | Tactic | Technique | Sub-Technique | ID | Evidence |
 |---|---|---|---|---|
-| Credential Access | Brute Force | Password Guessing | T1110.001 | 880 × EventCode 4625 targeting socuser |
+| Credential Access | Brute Force | Password Guessing | T1110.001 | 808 × EventCode 4625 targeting socuser |
 | Lateral Movement | Remote Services | Remote Desktop Protocol | T1021.001 | EventCode 4624 — Logon Type 10 confirmed |
 | Defense Evasion | Valid Accounts | Local Accounts | T1078.003 | Successful login using valid socuser credentials |
 
@@ -320,7 +319,7 @@ Production-ready Sigma rule available at:
 | 5/26/2026 9:09:06 PM | 🔴 Attack | First failed RDP login — socuser — 192.168.56.10 | 4625 | [Screenshot 14](https://github.com/priyanka-sec/Windows-RDP-Brute-Force-Detection-Lab/blob/main/Screenshots/14-failed-rdp-authentication-event-4625.jpg) |
 | 5/26/2026 9:09:07 PM | 🔴 Attack | Second failed login — NTLM confirmed | 4625 | [Screenshot 13](https://github.com/priyanka-sec/Windows-RDP-Brute-Force-Detection-Lab/blob/main/Screenshots/13-eventid-4625-failed-rdp-logon-analysis.jpg) |
 | 5/26/2026 9:09:57 PM | 🚨 Breach | Successful RDP login — Logon Type 10 | 4624 | [Screenshot 15](https://github.com/priyanka-sec/Windows-RDP-Brute-Force-Detection-Lab/blob/main/Screenshots/15-successful-rdp-authentication-event-4624-logon-type.jpg) |
-| 26/05/2026 20:24:10 | 🟡 Detection | Splunk CRITICAL alert — 76 events in 15 min | SPL | [Screenshot 25](https://github.com/priyanka-sec/Windows-RDP-Brute-Force-Detection-Lab/blob/main/Screenshots/25-splunk-bruteforce-detected.png) |
+| 26/05/2026 20:24:10 | 🟡 Detection | Splunk detection query identified high failed authentication volume | SPL | [Screenshot 25](https://github.com/priyanka-sec/Windows-RDP-Brute-Force-Detection-Lab/blob/main/Screenshots/25-splunk-bruteforce-detected.png) |
 | 26/05/2026 20:39:10 | 🟡 TP Confirmed | Success-after-failure chain — True Positive | SPL | [Screenshot 27](https://github.com/priyanka-sec/Windows-RDP-Brute-Force-Detection-Lab/blob/main/Screenshots/27-splunk-success-after-failures.png) |
 | Post-detection | 🟡 Sysmon Hunt | No malicious process found post-breach | Sysmon 1 | [Screenshot 23](https://github.com/priyanka-sec/Windows-RDP-Brute-Force-Detection-Lab/blob/main/Screenshots/23-sysmon-powershell-process-hunting.jpg) |
 | Post-detection | 🟢 Containment | IP blocked — account disabled — password reset | — | SOC Action |
@@ -378,9 +377,9 @@ Full hardening guide:
 
 # 📚 Lessons Learned
 
-1. **Account lockout policy is non-negotiable.** 880 attempts
-   succeeded without any automatic blocking. One Group Policy
-   change stops this attack class entirely.
+1. **Account lockout policy is non-negotiable.** Hundreds of 
+   failed authentication attempts were possible without 
+   automatic blocking.
 
 2. **RDP must never be directly exposed.** Any machine with
    port 3389 accessible on a network is an active target.
@@ -428,8 +427,8 @@ Full hardening guide:
 | 22 | [Sysmon Process Details](https://github.com/priyanka-sec/Windows-RDP-Brute-Force-Detection-Lab/blob/main/Screenshots/22-sysmon-process-details-analysis.jpg) | Deep process analysis |
 | 23 | [Sysmon PS Hunt](https://github.com/priyanka-sec/Windows-RDP-Brute-Force-Detection-Lab/blob/main/Screenshots/23-sysmon-powershell-process-hunting.jpg) | Post-compromise process hunt |
 | 24 | [Splunk Sources Flowing](https://github.com/priyanka-sec/Windows-RDP-Brute-Force-Detection-Lab/blob/main/Screenshots/24-splunk-all-sourcetypes-flowing.png) | All 4 log sources in Splunk |
-| 25 | [Splunk CRITICAL Detection](https://github.com/priyanka-sec/Windows-RDP-Brute-Force-Detection-Lab/blob/main/Screenshots/25-splunk-bruteforce-detected.png) | 76 events — CRITICAL severity |
-| 26 | [Splunk Attack Timechart](https://github.com/priyanka-sec/Windows-RDP-Brute-Force-Detection-Lab/blob/main/Screenshots/26-splunk-timechart-attack-spike.png) | Attack spike — 880 events |
+| 25 | [Splunk CRITICAL Detection](https://github.com/priyanka-sec/Windows-RDP-Brute-Force-Detection-Lab/blob/main/Screenshots/25-splunk-bruteforce-detected.png) | Failed authentication detection — CRITICAL severity |
+| 26 | [Splunk Attack Timechart](https://github.com/priyanka-sec/Windows-RDP-Brute-Force-Detection-Lab/blob/main/Screenshots/26-splunk-timechart-attack-spike.png) | Authentication spike visible in Splunk timechart |
 | 27 | [Splunk TP Confirmed](https://github.com/priyanka-sec/Windows-RDP-Brute-Force-Detection-Lab/blob/main/Screenshots/27-splunk-success-after-failures.png) | Success after failure chain |
 
 <br><br>
