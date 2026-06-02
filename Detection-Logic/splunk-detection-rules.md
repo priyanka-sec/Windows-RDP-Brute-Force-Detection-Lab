@@ -2,21 +2,33 @@
 
 This document contains the Splunk detection logic used during the investigation of a Windows RDP brute force attack against Windows Server 2022.
 
-The purpose of these detections is to identify:
+These detection rules were created and validated using real telemetry collected from a controlled SOC lab environment.
 
-✅ Failed authentication activity  
-✅ Brute force patterns  
-✅ Successful compromise confirmation  
-✅ Authentication spikes  
-✅ Post-compromise activity hunting  
+<br><br>
+
+## 🎯 Detection Goals
+
+The objective of these detections is to identify:
+
+✅ Failed authentication activity
+
+✅ Brute force behavior
+
+✅ Successful compromise confirmation
+
+✅ Authentication spikes and attack patterns
+
+✅ Post-compromise attacker activity
+
+✅ Escalation points within SOC workflow
 
 <br><br>
 
 # 🚨 Detection Rule 1 — Failed RDP Authentication Detection
 
-## Objective
+## 🎯 Objective
 
-Identify Windows failed authentication attempts generated during RDP login failures.
+Identify failed Windows authentication attempts generated during RDP login failures.
 
 ## SPL Query
 
@@ -26,26 +38,42 @@ index=main EventCode=4625
 | sort -_time
 ```
 
-## Detection Logic
+## 🧠 Detection Logic
 
-- EventCode 4625 represents failed logon attempts
-- Multiple occurrences may indicate password guessing
-- Logon Type helps determine authentication source
+- EventCode 4625 represents failed authentication attempts
+- Multiple repeated failures may indicate password guessing activity
+- Source IP helps identify attacker origin
+- Logon Type helps identify authentication method
 
-## Expected Outcome
+## 🔬 SOC Analyst Investigation Steps
 
-- Failed authentication events visible
+1. Review source IP address
+
+2. Identify targeted accounts
+
+3. Verify authentication method
+
+4. Determine authentication failure reason
+
+5. Check if failures are isolated or repeated
+
+## ✅ Expected Outcome
+
+- Failed authentication visibility
+
 - Source IP identification
-- Target account identification
-- Authentication failure reason visibility
+
+- Target account visibility
+
+- Authentication failure analysis
 
 <br><br>
 
 # 🔥 Detection Rule 2 — Brute Force Threshold Detection
 
-## Objective
+## 🎯 Objective
 
-Detect excessive authentication failures indicating brute force behavior.
+Detect excessive failed authentication attempts indicating brute force activity.
 
 ## SPL Query
 
@@ -60,33 +88,53 @@ true(),"MEDIUM")
 | sort -failed_attempts
 ```
 
-## Detection Logic
+## 🧠 Detection Logic
 
-- Count failed logins
-- Apply severity thresholds
+- Count authentication failures per host
+
+- Apply severity classification
+
 - Filter suspicious authentication volume
 
-## Severity Thresholds
+- Prioritize analyst investigation
 
-| Failed Attempts | Severity |
-|---|---|
-| >50 | 🔴 CRITICAL |
-| >20 | 🟠 HIGH |
-| ≤20 | 🟡 MEDIUM |
+## 🚦 Severity Thresholds
 
-## Expected Outcome
+| Failed Attempts | Severity | SOC Action |
+|---|---|---|
+| >50 | 🔴 CRITICAL | Immediate escalation |
+| >20 | 🟠 HIGH | Analyst investigation |
+| ≤20 | 🟡 MEDIUM | Monitor |
 
-- Rapid identification of brute force activity
+## 🔬 SOC Investigation Workflow
+
+1. Identify affected host
+
+2. Review authentication volume
+
+3. Check targeted accounts
+
+4. Correlate with successful logins
+
+5. Escalate if threshold exceeded
+
+## ✅ Expected Outcome
+
+- Rapid brute force identification
+
 - Automatic severity classification
-- Reduced analyst triage time
+
+- Reduced triage time
+
+- Faster escalation decisions
 
 <br><br>
 
 # ✅ Detection Rule 3 — Successful Authentication Confirmation
 
-## Objective
+## 🎯 Objective
 
-Identify successful login occurring after multiple authentication failures.
+Identify successful authentication occurring after multiple failures.
 
 ## SPL Query
 
@@ -97,25 +145,45 @@ index=main (EventCode=4624 OR EventCode=4625)
 | sort _time
 ```
 
-## Detection Logic
+## 🧠 Detection Logic
 
-- Correlate failures and successes
-- Detect success-after-failure patterns
+- Correlate failures with successful authentication
+
+- Identify success-after-failure patterns
+
 - Confirm compromise
 
-## Expected Outcome
+- Validate true positives
+
+## 🔬 SOC Investigation Workflow
+
+1. Review authentication timeline
+
+2. Identify repeated failures
+
+3. Locate successful login event
+
+4. Validate source IP consistency
+
+5. Escalate confirmed compromise
+
+## ✅ Expected Outcome
 
 - True Positive confirmation
+
 - Breach validation
-- Faster escalation decision making
+
+- Faster containment decisions
+
+- Reduced false positives
 
 <br><br>
 
 # 📈 Detection Rule 4 — Authentication Spike Visualization
 
-## Objective
+## 🎯 Objective
 
-Visualize authentication spikes during attack windows.
+Visualize attack patterns during brute force activity.
 
 ## SPL Query
 
@@ -124,23 +192,39 @@ index=main EventCode=4625
 | timechart span=1m count
 ```
 
-## Detection Logic
+## 🧠 Detection Logic
 
-- Groups failed logins by time window
-- Creates visual attack timeline
-- Identifies attack bursts
+- Groups authentication events over time
 
-## Expected Outcome
+- Creates attack timeline
 
-- Clear visualization of attack intensity
-- Easier incident timeline creation
-- Faster SOC triage
+- Identifies authentication bursts
+
+- Improves incident reconstruction
+
+## 🔬 SOC Analyst Usage
+
+- Identify attack start time
+
+- Identify attack duration
+
+- Measure attack intensity
+
+- Build incident timeline
+
+## ✅ Expected Outcome
+
+- Clear attack visualization
+
+- Faster timeline creation
+
+- Improved triage efficiency
 
 <br><br>
 
 # 🕵️ Detection Rule 5 — Post Compromise Process Hunting
 
-## Objective
+## 🎯 Objective
 
 Identify suspicious activity occurring after successful compromise.
 
@@ -152,61 +236,100 @@ index=main sourcetype="WinEventLog:Sysmon" EventCode=1
 | sort -_time
 ```
 
-## Detection Logic
+## 🧠 Detection Logic
 
 - Search process creation events
-- Review commands executed after login
-- Hunt persistence or malware execution
 
-## Expected Outcome
+- Identify suspicious commands
 
-- Process visibility after breach
+- Hunt persistence attempts
+
+- Detect malware execution
+
+## 🔬 SOC Investigation Workflow
+
+1. Identify process creation after login
+
+2. Review command line arguments
+
+3. Validate parent process
+
+4. Search suspicious binaries
+
+5. Determine attacker activity
+
+## ✅ Expected Outcome
+
+- Post-compromise visibility
+
 - Persistence hunting
-- Attacker activity validation
+
+- Malware detection
+
+- Improved incident response
 
 <br><br>
 
 # ⚔️ Detection Coverage Summary
 
-| Detection | Event IDs | Purpose |
-|---|---|---|
-| Failed Authentication | 4625 | Detect login failures |
-| Brute Force Detection | 4625 | Detect password guessing |
-| Successful Login Correlation | 4624 + 4625 | Confirm compromise |
-| Authentication Spike Detection | 4625 | Visualize attack activity |
-| Post Compromise Hunting | Sysmon 1 | Investigate attacker actions |
+| Detection Rule | Event IDs | Purpose | ATT&CK Mapping |
+|---|---|---|---|
+| Failed Authentication Detection | 4625 | Detect login failures | T1110 |
+| Brute Force Detection | 4625 | Detect password guessing | T1110.001 |
+| Success Correlation | 4624 + 4625 | Confirm compromise | T1078 |
+| Authentication Spike Detection | 4625 | Visualize attack activity | T1110 |
+| Post Compromise Hunting | Sysmon 1 | Investigate attacker activity | Multiple |
 
 <br><br>
 
-# 🧠 Analyst Notes
+# 🧪 Validation Environment
 
-These detection rules were tested in a controlled SOC lab environment using:
+These detection rules were validated using:
 
-- Kali Linux attacker machine
-- Windows Server 2022 target
-- Splunk Enterprise SIEM
-- Sysmon telemetry
-- Splunk Universal Forwarder
+✅ Kali Linux attacker machine
 
-These rules were used to investigate and confirm a successful Windows RDP brute force attack and produce incident report:
+✅ Windows Server 2022 target
 
-**INC-RDP-2026-001**
+✅ Splunk Enterprise SIEM
+
+✅ Sysmon telemetry
+
+✅ Splunk Universal Forwarder
+
+✅ Controlled brute force simulation
 
 <br><br>
 
-# 🛡️ Detection Engineering Lessons Learned
+# 🧠 Detection Engineering Lessons Learned
 
-✅ Authentication logs alone are insufficient without correlation
+✅ Authentication logs require correlation for accurate detection
 
 ✅ Successful logins after failures require immediate investigation
 
-✅ Sysmon significantly improves post-compromise visibility
+✅ Time-based aggregation significantly improves brute force detection
 
-✅ Time-based aggregation dramatically improves brute force detection
+✅ Sysmon improves post-compromise visibility
 
-✅ Detection engineering is not only query writing — context matters
+✅ Detection engineering requires context — not only queries
+
+✅ Effective detections reduce analyst workload and triage time
 
 <br><br>
 
-**Analyst:** Priyanka Rane | SOC Analyst L1
-**Date:** 26 May 2026
+# 📌 Incident Reference
+
+**Incident ID:** INC-RDP-2026-001
+
+**Classification:** Confirmed RDP Brute Force Attack
+
+**Severity:** High
+
+**Status:** Contained
+
+<br><br>
+
+**👩‍💻 Analyst:** Priyanka Rane | SOC Analyst L1
+
+**📅 Date:** 26 May 2026
+
+**🛡️ Detection Status:** Validated in Lab Environment
